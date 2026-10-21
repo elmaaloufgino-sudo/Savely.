@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Savely admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#0f172a;--mute:#64748b;--head:#1e293b;--green:#10b981;--gink:#059669;--line:#e2e8f0;--red:#dc2626;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#162033;--ink:#e8eef7;--mute:#94a3b8;--head:#111a2e;--gink:#34d399;--line:#263349;--red:#f87171;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:560px;margin-inline:auto;padding:16px 16px 60px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.mark{width:42px;height:42px;border-radius:12px;background:#34d399;display:grid;place-items:center;font-size:22px}
+h1{margin:0;font-size:20px}h1 small{display:block;font-size:13px;font-weight:400;color:var(--mute)}
+h2{font-size:17px;margin:22px 0 10px}
+.sp{flex:1}
+.panel{background:var(--card);border-radius:20px;padding:16px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+label{display:block;font-size:13px;color:var(--mute);margin-top:12px}
+input,select{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:0 12px;font:inherit;font-size:16px;margin-top:4px}
+input[type=color]{padding:4px;height:46px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{height:46px;border:0;border-radius:12px;background:var(--green);color:#fff;font:700 16px inherit;padding:0 18px;cursor:pointer;margin-top:16px;width:100%}
+.btn.ghost{background:none;color:var(--gink);border:1px solid var(--line)}
+.btn.sm{height:38px;font-size:14px;margin:0;width:auto;padding:0 14px}
+.btn.red{background:none;color:var(--red);border:1px solid var(--red)}
+.msg{min-height:20px;margin-top:10px;font-size:14px;color:var(--red)}
+.item{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:16px;padding:12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.dot{width:40px;height:40px;border-radius:12px;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center;flex:none}
+.t{flex:1;min-width:0}.t b{display:block;font-size:15px;overflow-wrap:anywhere}.t span{font-size:13px;color:var(--mute)}
+.acts{display:flex;flex-direction:column;gap:6px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:14px;padding:11px 18px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.toast.show{opacity:1}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #34d399;outline-offset:2px}
+</style>
+</head>
+<body>
+<header><div class="mark" aria-hidden="true">🐷</div><h1>Savely admin<small id="who"></small></h1><div class="sp"></div><button class="btn ghost sm" id="out" hidden>Log out</button></header>
+<div id="app"></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
+const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
+let sb=null;try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+let user=null,isAdmin=false,DATA=[],editId=null,filter='';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const colr=c=>/^#[0-9a-f]{6}$/i.test(c||'')?c:'#64748b';
+const num=s=>{const n=parseFloat(String(s).replace(',','.'));return isNaN(n)?null:n};
+const kr=n=>Number(n).toLocaleString('sv-SE',{maximumFractionDigits:2})+' kr';
+const v=id=>$('#'+id).value;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+const setMsg=m=>{const e=$('#msg');if(e)e.textContent=m};
+
+function loginView(note){
+  $('#app').innerHTML=`<div class="panel"><b>Log in to manage deals</b><label for="em">Email</label><input id="em" type="email" autocomplete="email"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password"><div class="msg" id="msg" role="alert">${esc(note||'')}</div><button class="btn" data-login>Log in</button></div>`;
+}
+function denyView(){
+  $('#app').innerHTML=`<div class="panel"><b>No access</b><p>You are logged in as ${esc(user.email)}, but this account is not an admin. Add it with the admin SQL, then reload this page.</p></div>`;
+}
+function formHTML(d){
+  d=d||{};
+  const cats=['Mat','Elektronik','Apotek','Kläder'].map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('');
+  return `<div class="panel"><b id="ft">${editId?'Edit deal':'Add a deal'}</b>
+  <div class="two"><div><label for="f_store">Store</label><input id="f_store" value="${esc(d.store)}" placeholder="ICA"></div><div><label for="f_cat">Category</label><select id="f_cat">${cats}</select></div></div>
+  <label for="f_name">Product</label><input id="f_name" value="${esc(d.name)}" placeholder="Kycklingfilé 900 g">
+  <div class="two"><div><label for="f_price">Deal price (kr)</label><input id="f_price" inputmode="decimal" value="${esc(d.price)}"></div><div><label for="f_old">Original price (kr)</label><input id="f_old" inputmode="decimal" value="${esc(d.old_price)}"></div></div>
+  <div class="two"><div><label for="f_until">Valid until</label><input id="f_until" value="${esc(d.valid_until)}" placeholder="söndag eller 30/10"></div><div><label for="f_mem">Membership (optional)</label><input id="f_mem" value="${esc(d.membership)}" placeholder="ICA Stammis"></div></div>
+  <div class="two"><div><label for="f_utext">Unit price text (optional)</label><input id="f_utext" value="${esc(d.unit_text)}" placeholder="87,78 kr/kg"></div><div><label for="f_uprice">Unit price number</label><input id="f_uprice" inputmode="decimal" value="${esc(d.unit_price)}" placeholder="87.78"></div></div>
+  <label for="f_group">Compare group (optional, same name = compared together)</label><input id="f_group" value="${esc(d.compare_group)}" placeholder="Kyckling">
+  <div class="two"><div><label for="f_logo">Logo letters (optional)</label><input id="f_logo" maxlength="4" value="${esc(d.logo)}"></div><div><label for="f_color">Logo colour</label><input id="f_color" type="color" value="${colr(d.color)==='#64748b'&&!d.color?'#10b981':colr(d.color)}"></div></div>
+  <div class="msg" id="msg" role="alert"></div>
+  <button class="btn" data-save>${editId?'Save changes':'Add deal'}</button>
+  ${editId?'<button class="btn ghost" data-cancel>Cancel</button>':''}</div>`;
+}
+function adminView(){
+  $('#app').innerHTML=formHTML(editId?DATA.find(x=>x.id===editId):null)+`<h2>All deals (<span id="count">0</span>)</h2><input id="flt" type="search" placeholder="Search deals…" aria-label="Search deals" value="${esc(filter)}"><div id="list" style="margin-top:10px"></div>`;
+  renderList();
+}
+function renderList(){
+  const t=filter.trim().toLowerCase();
+  const items=DATA.filter(d=>!t||(d.store+' '+d.name+' '+d.category).toLowerCase().includes(t));
+  $('#count').textContent=items.length;
+  $('#list').innerHTML=items.length?items.map(d=>`<div class="item"><div class="dot" style="background:${colr(d.color)}">${esc(d.logo)}</div><div class="t"><b>${esc(d.store)}: ${esc(d.name)}</b><span>${kr(d.price)} (was ${kr(d.old_price)}) · until ${esc(d.valid_until)}</span></div><div class="acts"><button class="btn ghost sm" data-edit="${d.id}">Edit</button><button class="btn red sm" data-del="${d.id}">Delete</button></div></div>`).join(''):'<p>No deals found.</p>';
+}
+async function loadDeals(){
+  const {data,error}=await sb.from('deals').select('*').order('id',{ascending:false});
+  if(error){toast('Could not load deals');return}
+  DATA=data;
+}
+async function afterAuth(){
+  $('#out').hidden=!user;$('#who').textContent=user?user.email:'';
+  if(!user){isAdmin=false;loginView();return}
+  const {data,error}=await sb.from('admins').select('user_id').eq('user_id',user.id);
+  isAdmin=!error&&!!data&&data.length>0;
+  if(!isAdmin){denyView();return}
+  await loadDeals();adminView();
+}
+async function doLogin(){
+  if(!sb)return setMsg('Could not start. Reload the page.');
+  const email=v('em').trim(),pw=v('pw');
+  if(!email||!pw)return setMsg('Enter your email and password.');
+  setMsg('Please wait…');
+  const {error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error)setMsg(error.message.includes('Invalid login')?'Wrong email or password.':error.message);
+}
+function collect(){
+  const store=v('f_store').trim(),name=v('f_name').trim(),until=v('f_until').trim();
+  const price=num(v('f_price')),old=num(v('f_old'));
+  if(!store||!name||!until)return {err:'Store, product and valid until are required.'};
+  if(!price||price<=0||!old)return {err:'Enter a deal price and an original price.'};
+  if(old<=price)return {err:'The original price must be higher than the deal price.'};
+  const w=store.split(/\s+/);
+  const logo=v('f_logo').trim()||(w.length>1?w.map(x=>x[0]).join('').slice(0,3).toUpperCase():store.slice(0,3));
+  return {p:{store,logo,color:v('f_color'),category:v('f_cat'),name,price,old_price:old,unit_text:v('f_utext').trim()||null,unit_price:num(v('f_uprice')),membership:v('f_mem').trim()||null,valid_until:until,compare_group:v('f_group').trim()||null}};
+}
+async function save(){
+  const r=collect();if(r.err)return setMsg(r.err);
+  setMsg('Saving…');
+  let res;
+  if(editId){res=await sb.from('deals').update(r.p).eq('id',editId).select()}
+  else{const next=DATA.reduce((a,d)=>Math.max(a,d.id),0)+1;res=await sb.from('deals').insert({id:next,...r.p}).select()}
+  if(res.error||!res.data||!res.data.length)return setMsg('Could not save. Are you logged in as an admin?');
+  toast(editId?'Changes saved':'Deal added');
+  editId=null;await loadDeals();adminView();scrollTo(0,0);
+}
+async function del(id){
+  const d=DATA.find(x=>x.id===id);if(!d)return;
+  if(!confirm('Delete "'+d.name+'" from '+d.store+'? This also removes it from users\' saved lists.'))return;
+  const res=await sb.from('deals').delete().eq('id',id).select();
+  if(res.error||!res.data||!res.data.length)return toast('Could not delete');
+  toast('Deal deleted');await loadDeals();renderList();
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.login!==undefined)doLogin();
+  else if(d.save!==undefined)save();
+  else if(d.cancel!==undefined){editId=null;adminView()}
+  else if(d.edit){editId=+d.edit;adminView();scrollTo(0,0)}
+  else if(d.del){del(+d.del)}
+  else if(b.id==='out'){sb.auth.signOut()}
+});
+document.addEventListener('input',e=>{if(e.target.id==='flt'){filter=e.target.value;renderList()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='pw'||e.target.id==='em'))doLogin()});
+(async()=>{
+  if(!sb){loginView('Could not start. Reload the page.');return}
+  const {data}=await sb.auth.getSession();
+  user=data.session?data.session.user:null;
+  await afterAuth();
+  sb.auth.onAuthStateChange((ev,s)=>{const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;setTimeout(afterAuth,0)}});
+})();
+</script>
+</body>
+</html>
