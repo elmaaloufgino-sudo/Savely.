@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Savely</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#0f172a;--mute:#64748b;--head:#1e293b;--green:#10b981;--gink:#059669;--wbg:#fef3c7;--wink:#92400e;--line:#e2e8f0;--chip:#fff;--nav:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#162033;--ink:#e8eef7;--mute:#94a3b8;--head:#111a2e;--gink:#34d399;--wbg:#3b2f12;--wink:#fcd34d;--line:#263349;--chip:#162033;--nav:#111a2e;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:520px;margin-inline:auto;padding-bottom:84px;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--head);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--head);padding:14px 16px 16px;border-radius:0 0 28px 28px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:46px;height:46px;border-radius:14px;background:#34d399;display:grid;place-items:center;font-size:24px}
+.brand h1{margin:0;font-size:24px;line-height:1.1;color:#fff;font-weight:800}
+.brand p{margin:2px 0 0;font-size:13px;color:#34d399}
+.sp{flex:1}
+.hb{position:relative;width:46px;height:46px;border-radius:50%;border:0;background:#334155;color:#fff;display:grid;place-items:center;cursor:pointer}
+.hb i{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#34d399;color:#0f172a;font:700 11px/20px inherit;font-style:normal;text-align:center}
+.search{margin-top:14px;display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:0 14px}
+.search input{flex:1;border:0;outline:0;background:none;height:46px;font:inherit;font-size:15px;color:#0f172a}
+.search svg{color:#94a3b8;flex:none}
+main{padding:16px}
+h2{display:flex;align-items:center;gap:8px;font-size:18px;margin:18px 0 12px;font-weight:800}
+h2 .n{margin-left:auto;font-size:13px;font-weight:400;color:var(--mute)}
+.hero{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
+.hero::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+.hc{flex:0 0 78%;scroll-snap-align:start;border:0;text-align:left;color:#fff;border-radius:22px;padding:20px;font:inherit;cursor:pointer;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end}
+.hc small{align-self:flex-start;background:rgba(255,255,255,.25);border-radius:12px;padding:3px 10px;font-size:11px;margin-bottom:auto}
+.hc b{font-size:21px;line-height:1.2;margin-top:12px}
+.hc span{font-size:14px;opacity:.9;margin-top:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:16px -16px 0;padding:0 16px 4px;scrollbar-width:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:22px;padding:10px 18px;font:600 15px inherit;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{position:relative;background:var(--card);border-radius:20px;padding:14px;box-shadow:0 1px 3px rgba(15,23,42,.08);display:flex;flex-direction:column}
+.badge{position:absolute;top:12px;left:12px;background:var(--green);color:#fff;font-weight:700;font-size:13px;border-radius:12px;padding:3px 9px}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--bg);color:var(--mute);display:grid;place-items:center;cursor:pointer}
+.fav.on{color:#f43f5e}.fav.on svg{fill:#f43f5e}
+.logo{width:56px;height:56px;border-radius:16px;color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;margin:30px auto 10px}
+.store{font-size:13px;color:var(--mute)}
+.card h3{margin:2px 0 10px;font-size:16px;line-height:1.25;min-height:40px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price b{font-size:21px;color:var(--gink)}
+.price s{font-size:13px;color:var(--mute)}
+.mute{font-size:13px;color:var(--mute);margin-top:2px}
+.mem{align-self:flex-start;margin-top:8px;background:var(--wbg);color:var(--wink);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:600}
+.exp{margin-top:auto;padding-top:10px;font-size:12px;color:var(--mute)}
+.sw{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:14px;color:var(--mute)}
+.sw button{width:44px;height:26px;border-radius:13px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none}
+.sw button::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw button[aria-pressed="true"]{background:var(--green)}
+.sw button[aria-pressed="true"]::after{transform:translateX(18px)}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.row .logo{margin:0;width:46px;height:46px;font-size:12px;border-radius:14px;flex:none}
+.row .t{flex:1;min-width:0}.row .t b{display:block;font-size:15px;overflow-wrap:anywhere}.row .t span{font-size:13px;color:var(--mute)}
+.best{border:2px solid var(--green)}
+.tag{font-size:12px;font-weight:700;color:var(--gink)}
+.code{border:2px dashed var(--green);background:none;color:var(--gink);font:800 14px inherit;border-radius:12px;padding:9px 12px;cursor:pointer;letter-spacing:.04em}
+.sum{background:var(--head);color:#fff;border-radius:20px;padding:18px;margin-bottom:14px}
+.sum b{display:block;font-size:28px;color:#34d399}
+.empty{text-align:center;color:var(--mute);padding:40px 20px}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:var(--nav);border-top:1px solid var(--line);display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:9}
+nav button{flex:1;border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font:600 12px inherit;cursor:pointer;padding:6px 0}
+nav button[aria-current="page"]{color:var(--gink)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:14px;padding:11px 18px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;align-items:end;justify-items:center;z-index:30}
+.sheet{background:var(--card);width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 4px}.sheet p{margin:0 0 6px;color:var(--mute);font-size:14px}
+.sheet input{width:100%;height:48px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);padding:0 14px;font:inherit;font-size:16px;margin-top:10px}
+.btn{width:100%;height:48px;border:0;border-radius:14px;background:var(--green);color:#fff;font:700 16px inherit;margin-top:12px;cursor:pointer;padding:0 20px}
+.btn.ghost{background:none;color:var(--gink);border:1px solid var(--line)}
+.msg{min-height:20px;margin-top:10px;font-size:14px;color:var(--wink)}
+button:focus-visible,input:focus-visible{outline:3px solid #34d399;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark" aria-hidden="true">🐷</div>
+    <div><h1>Savely</h1><p>Smart sparande, varje vecka</p></div>
+    <div class="sp"></div>
+    <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
+  </div>
+  <label class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
+</header>
+<main id="main"></main>
+<nav aria-label="Huvudmeny">
+  <button data-tab="offers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
+  <button data-tab="compare"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
+  <button data-tab="codes"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Rabattkoder</button>
+  <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista</button>
+</nav>
+<div id="modal"></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
+const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
+let sb=null;
+try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+
+const HERO=[
+{t:'Superklipp på ICA Maxi',s:'Upp till 40 % på kött och chark',cat:'Mat',bg:'linear-gradient(135deg,#ef4444,#fb923c)'},
+{t:'20 % på elektronik',s:'Elgiganten, hela helgen',cat:'Elektronik',bg:'linear-gradient(135deg,#1d4ed8,#0ea5e9)'},
+{t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#f43f5e,#f472b6)'},
+{t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#f59e0b,#fbbf24)'}
+];
+const CODES=[
+{s:'Zalando',l:'Z',col:'#ea580c',code:'HOST15',d:'15 % på höstnyheter, gäller t.o.m. 31/10'},
+{s:'Stadium',l:'St',col:'#4338ca',code:'VINTER10',d:'10 % på vinterkläder'},
+{s:'Elgiganten',l:'El',col:'#2563eb',code:'HELG20',d:'20 % på elektronik, hela helgen'},
+{s:'Apotek Hjärtat',l:'AH',col:'#e11d48',code:'HUD3',d:'3 för 2 på hudvård'}
+];
+const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
+let DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const colr=c=>/^#[0-9a-f]{3,8}$/i.test(c||'')?c:'#64748b';
+const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+' kr';
+const pct=o=>Math.round((1-o.p/o.o)*100);
+const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
+const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const norm=r=>({id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
+
+async function loadDeals(){
+  loading=true;err='';render();
+  if(!sb){loading=false;err='Appen kunde inte starta. Ladda om sidan.';render();return}
+  const {data,error}=await sb.from('deals').select('*').order('id');
+  loading=false;
+  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
+  render();
+}
+async function loadFavs(){
+  if(!sb||!user){favs=new Set();render();return}
+  const {data,error}=await sb.from('favorites').select('deal_id');
+  if(!error)favs=new Set(data.map(r=>r.deal_id));
+  render();
+}
+
+function card(o){const f=favs.has(o.id);return `<article class="card"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}</div><div class="store">${esc(o.s)}</div><h3>${esc(o.n)}</h3><div class="price"><b>${kr(o.p)}</b><s>${kr(o.o)}</s></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></article>`}
+
+function offers(){
+  const t=q.trim().toLowerCase();
+  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.s+' '+o.n+' '+o.c).toLowerCase().includes(t)));
+  let body;
+  if(loading)body='<div class="empty"><b>Hämtar erbjudanden…</b></div>';
+  else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
+  else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
+  else body=`<div class="grid">${list.map(card).join('')}</div>`;
+  return `<h2>🔥 Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join('')}</div>
+  <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
+  <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
+
+function compare(){
+  const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
+  if(!gs.length)return `<h2>Jämför jämförpris</h2><div class="empty"><b>${loading?'Hämtar…':'Inget att jämföra ännu'}</b></div>`;
+  if(!gs.includes(cmp))cmp=gs[0];
+  const items=DATA.filter(o=>o.g===cmp&&o.uv!=null).sort((a,b)=>a.uv-b.uv);
+  const best=items[0].uv;
+  return `<h2>Jämför jämförpris</h2><div class="chips" style="margin-top:0" role="group" aria-label="Produkter">${gs.map(g=>`<button class="chip" data-cmp="${esc(g)}" aria-pressed="${g===cmp}">${esc(g)}</button>`).join('')}</div>
+  <h2 style="font-size:15px;color:var(--mute);font-weight:600">Billigast per kilo överst</h2>
+  ${items.map((o,i)=>`<div class="row ${i?'':'best'}"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}</div><div class="t"><b>${esc(o.s)}: ${kr(o.p)}</b><span>${esc(o.n)} · ${esc(o.u)}${o.m?' · kräver '+esc(o.m):''}</span></div>${i?`<span class="mute">+${Math.round((o.uv/best-1)*100)} %</span>`:'<span class="tag">Billigast</span>'}</div>`).join('')}`}
+
+function codes(){return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${c.col}">${c.l}</div><div class="t"><b>${c.s}</b><span>${c.d}</span></div><button class="code" data-copy="${c.code}" aria-label="Kopiera koden ${c.code}">${c.code}</button></div>`).join('')}`}
+
+function list(){
+  const items=DATA.filter(o=>favs.has(o.id));
+  const saved=items.reduce((a,o)=>a+o.o-o.p,0);
+  const acct=`<div class="row"><div class="t"><b>${user?esc(user.email):'Du är inte inloggad'}</b><span>${user?'Din sparlista följer med på alla enheter.':'Logga in för att spara erbjudanden.'}</span></div><button class="code" ${user?'data-logout':'data-login'}>${user?'Logga ut':'Logga in'}</button></div>`;
+  if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
+  return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
+
+function render(){
+  $('#main').innerHTML={offers,compare,codes,list}[tab]();
+  $('#cnt').textContent=favs.size;
+  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+
+function openAuth(note){
+  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Savely</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
+  setTimeout(()=>{const e=$('#em');if(e)e.focus()},50);
+}
+function closeAuth(){$('#modal').innerHTML=''}
+const setMsg=m=>{const e=$('#msg');if(e)e.textContent=m};
+
+async function doAuth(mode){
+  if(!sb)return setMsg('Appen kunde inte starta. Ladda om sidan.');
+  const email=$('#em').value.trim(),pw=$('#pw').value;
+  if(!email||pw.length<6)return setMsg('Fyll i e-post och ett lösenord på minst 6 tecken.');
+  setMsg('Vänta…');
+  if(mode==='up'){
+    const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.href.split('#')[0]}});
+    if(error)return setMsg(error.message);
+    if(data.session){closeAuth();toast('Kontot är skapat')}
+    else setMsg('Vi har skickat ett bekräftelsemail. Öppna länken i mejlet och logga sedan in.');
+  }else{
+    const {error}=await sb.auth.signInWithPassword({email,password:pw});
+    if(error){
+      const m=error.message||'';
+      return setMsg(m.includes('Invalid login')?'Fel e-post eller lösenord.':m.includes('not confirmed')?'Bekräfta din e-post först. Kolla din inkorg.':m);
+    }
+    closeAuth();toast('Du är inloggad');
+  }
+}
+
+async function toggleFav(id){
+  if(!user){openAuth('Logga in för att spara erbjudanden i din sparlista.');return}
+  const had=favs.has(id);
+  had?favs.delete(id):favs.add(id);render();
+  const r=had?await sb.from('favorites').delete().eq('deal_id',id).eq('user_id',user.id):await sb.from('favorites').insert({deal_id:id});
+  if(r.error){had?favs.add(id):favs.delete(id);render();toast('Det gick inte att spara. Försök igen.')}
+  else toast(had?'Borttagen från sparlistan':'Sparad i sparlistan');
+}
+
+document.addEventListener('click',e=>{
+  if(e.target.matches('[data-close]')){closeAuth();return}
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tab){tab=d.tab;render();scrollTo(0,0)}
+  else if(d.fav){toggleFav(+d.fav)}
+  else if(d.cat){cat=d.cat;render()}
+  else if(d.hero){cat=HERO[+d.hero].cat;render();$('.chips').scrollIntoView({behavior:'smooth'})}
+  else if(d.mem!==undefined){hideMem=!hideMem;render()}
+  else if(d.cmp){cmp=d.cmp;render()}
+  else if(d.retry!==undefined){loadDeals()}
+  else if(d.login!==undefined){openAuth()}
+  else if(d.logout!==undefined){sb.auth.signOut().then(()=>toast('Du är utloggad'))}
+  else if(d.auth){doAuth(d.auth)}
+  else if(d.copy){const c=d.copy;try{navigator.clipboard.writeText(c).then(()=>toast('Koden '+c+' är kopierad'),()=>toast('Din kod: '+c))}catch(x){toast('Din kod: '+c)}}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeAuth();
+  if(e.key==='Enter'&&e.target.closest('.sheet'))doAuth('in');
+});
+$('#q').addEventListener('input',e=>{q=e.target.value;if(tab!=='offers')tab='offers';render()});
+
+if(sb){
+  sb.auth.onAuthStateChange((ev,session)=>{
+    user=session?session.user:null;
+    setTimeout(loadFavs,0);
+  });
+}
+loadDeals();
+</script>
+</body>
+</html>
