@@ -44,7 +44,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
 const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
 let sb=null;try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
-let user=null,isAdmin=false,DATA=[],editId=null,filter='';
+let user=null,isAdmin=false,DATA=[],CODES=[],view='deals',editId=null,filter='';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const colr=c=>/^#[0-9a-f]{6}$/i.test(c||'')?c:'#64748b';
@@ -76,7 +76,8 @@ function formHTML(d){
   ${editId?'<button class="btn ghost" data-cancel>Cancel</button>':''}</div>`;
 }
 function adminView(){
-  $('#app').innerHTML=formHTML(editId?DATA.find(x=>x.id===editId):null)+`<h2>All deals (<span id="count">0</span>)</h2><input id="flt" type="search" placeholder="Search deals…" aria-label="Search deals" value="${esc(filter)}"><div id="list" style="margin-top:10px"></div>`;
+  if(view==='codes'){codesView();return}
+  $('#app').innerHTML=tabsHTML()+formHTML(editId?DATA.find(x=>x.id===editId):null)+`<h2>All deals (<span id="count">0</span>)</h2><input id="flt" type="search" placeholder="Search deals…" aria-label="Search deals" value="${esc(filter)}"><div id="list" style="margin-top:10px"></div>`;
   renderList();
 }
 function renderList(){
@@ -89,6 +90,36 @@ async function loadDeals(){
   const {data,error}=await sb.from('deals').select('*').order('id',{ascending:false});
   if(error){toast('Could not load deals');return}
   DATA=data;
+  const cr=await sb.from('codes').select('*').order('id',{ascending:false});
+  if(!cr.error)CODES=cr.data;
+}
+function tabsHTML(){
+  return `<div class="two" style="margin-bottom:14px"><button class="btn ${view==='deals'?'':'ghost'} sm" style="width:100%" data-view="deals">Deals</button><button class="btn ${view==='codes'?'':'ghost'} sm" style="width:100%" data-view="codes">Discount codes</button></div>`;
+}
+function codesView(){
+  $('#app').innerHTML=tabsHTML()+`<div class="panel"><b>Add a discount code</b>
+  <div class="two"><div><label for="c_store">Store</label><input id="c_store" placeholder="Zalando"></div><div><label for="c_code">Code</label><input id="c_code" placeholder="HOST15" autocapitalize="characters"></div></div>
+  <label for="c_desc">What it gives</label><input id="c_desc" placeholder="15 % på höstnyheter">
+  <div class="two"><div><label for="c_until">Valid until (optional)</label><input id="c_until" placeholder="31/10"></div><div><label for="c_color">Logo colour</label><input id="c_color" type="color" value="#10b981"></div></div>
+  <div class="msg" id="msg" role="alert"></div><button class="btn" data-csave>Add code</button></div>
+  <h2>All codes (${CODES.length})</h2>`+(CODES.length?CODES.map(c=>`<div class="item"><div class="dot" style="background:${colr(c.color)}">${esc(c.logo||String(c.store).slice(0,2))}</div><div class="t"><b>${esc(c.store)}: ${esc(c.code)}</b><span>${esc(c.description)}${c.valid_until?' · until '+esc(c.valid_until):''}</span></div><div class="acts"><button class="btn red sm" data-cdel="${c.id}">Delete</button></div></div>`).join(''):'<p>No codes yet.</p>');
+}
+async function saveCode(){
+  const store=v('c_store').trim(),code=v('c_code').trim().toUpperCase(),desc=v('c_desc').trim();
+  if(!store||!code||!desc)return setMsg('Store, code and description are required.');
+  const w=store.split(/\s+/);
+  const logo=w.length>1?w.map(x=>x[0]).join('').slice(0,3).toUpperCase():store.slice(0,3);
+  setMsg('Saving…');
+  const res=await sb.from('codes').insert({store,logo,color:v('c_color'),code,description:desc,valid_until:v('c_until').trim()||null}).select();
+  if(res.error||!res.data||!res.data.length)return setMsg('Could not save. Did you run the codes SQL, and are you an admin?');
+  toast('Code added');await loadDeals();codesView();
+}
+async function delCode(id){
+  const c=CODES.find(x=>x.id===id);if(!c)return;
+  if(!confirm('Delete the code '+c.code+' for '+c.store+'?'))return;
+  const res=await sb.from('codes').delete().eq('id',id).select();
+  if(res.error||!res.data||!res.data.length)return toast('Could not delete');
+  toast('Code deleted');await loadDeals();codesView();
 }
 async function afterAuth(){
   $('#out').hidden=!user;$('#who').textContent=user?user.email:'';
@@ -140,6 +171,9 @@ document.addEventListener('click',e=>{
   else if(d.cancel!==undefined){editId=null;adminView()}
   else if(d.edit){editId=+d.edit;adminView();scrollTo(0,0)}
   else if(d.del){del(+d.del)}
+  else if(d.view){view=d.view;editId=null;adminView()}
+  else if(d.csave!==undefined)saveCode()
+  else if(d.cdel){delCode(+d.cdel)}
   else if(b.id==='out'){sb.auth.signOut()}
 });
 document.addEventListener('input',e=>{if(e.target.id==='flt'){filter=e.target.value;renderList()}});

@@ -113,12 +113,7 @@ const HERO=[
 {t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#f43f5e,#f472b6)'},
 {t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#f59e0b,#fbbf24)'}
 ];
-const CODES=[
-{s:'Zalando',l:'Z',col:'#ea580c',code:'HOST15',d:'15 % på höstnyheter, gäller t.o.m. 31/10'},
-{s:'Stadium',l:'St',col:'#4338ca',code:'VINTER10',d:'10 % på vinterkläder'},
-{s:'Elgiganten',l:'El',col:'#2563eb',code:'HELG20',d:'20 % på elektronik, hela helgen'},
-{s:'Apotek Hjärtat',l:'AH',col:'#e11d48',code:'HUD3',d:'3 för 2 på hudvård'}
-];
+let CODES=[];
 const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
 let DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
 
@@ -137,6 +132,8 @@ async function loadDeals(){
   const {data,error}=await sb.from('deals').select('*').order('id');
   loading=false;
   if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
+  const cr=await sb.from('codes').select('*').order('id');
+  if(!cr.error)CODES=cr.data.map(r=>({s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
   render();
 }
 async function loadFavs(){
@@ -171,7 +168,10 @@ function compare(){
   <h2 style="font-size:15px;color:var(--mute);font-weight:600">Billigast per kilo överst</h2>
   ${items.map((o,i)=>`<div class="row ${i?'':'best'}"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}</div><div class="t"><b>${esc(o.s)}: ${kr(o.p)}</b><span>${esc(o.n)} · ${esc(o.u)}${o.m?' · kräver '+esc(o.m):''}</span></div>${i?`<span class="mute">+${Math.round((o.uv/best-1)*100)} %</span>`:'<span class="tag">Billigast</span>'}</div>`).join('')}`}
 
-function codes(){return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${c.col}">${c.l}</div><div class="t"><b>${c.s}</b><span>${c.d}</span></div><button class="code" data-copy="${c.code}" aria-label="Kopiera koden ${c.code}">${c.code}</button></div>`).join('')}`}
+function codes(){
+  if(loading)return '<h2>Rabattkoder</h2><div class="empty"><b>Hämtar rabattkoder…</b></div>';
+  if(!CODES.length)return '<h2>Rabattkoder</h2><div class="empty"><b>Inga rabattkoder just nu</b>Kom tillbaka snart.</div>';
+  return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${colr(c.col)}">${esc(c.l)}</div><div class="t"><b>${esc(c.s)}</b><span>${esc(c.d)}</span></div><button class="code" data-copy="${esc(c.code)}" aria-label="Kopiera koden ${esc(c.code)}">${esc(c.code)}</button></div>`).join('')}`}
 
 function list(){
   const items=DATA.filter(o=>favs.has(o.id));
