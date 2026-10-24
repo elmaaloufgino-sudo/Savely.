@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Skatan</title>
+<title>Fyndaren</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1e293b">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Skatan">
+<meta name="apple-mobile-web-app-title" content="Fyndaren">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
 <style>
 :root{--bg:#f6f8fb;--card:#fff;--ink:#0f172a;--mute:#64748b;--head:#1e293b;--green:#10b981;--gink:#059669;--wbg:#fef3c7;--wink:#92400e;--line:#e2e8f0;--chip:#fff;--nav:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -92,7 +92,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #34d399;outline-offse
 <header>
   <div class="brand">
     <img class="mark" src="icon-192.png" alt="" width="46" height="46">
-    <div><h1>Skatan</h1><p>Smart sparande, varje vecka</p></div>
+    <div><h1>Fyndaren</h1><p>Smart sparande, varje vecka</p></div>
     <div class="sp"></div>
     <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
   </div>
@@ -195,7 +195,7 @@ function render(){
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
 
 function openAuth(note){
-  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Skatan</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
+  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Fyndaren</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
   setTimeout(()=>{const e=$('#em');if(e)e.focus()},50);
 }
 function closeAuth(){$('#modal').innerHTML=''}
