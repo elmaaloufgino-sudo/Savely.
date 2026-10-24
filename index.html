@@ -105,6 +105,9 @@ header{border-radius:0;border-bottom:1px solid var(--line);background:rgba(7,16,
 .card h3{margin:2px 0 6px;min-height:0;font-size:15px}
 .card .exp{margin-top:0;padding-top:6px}
 .card .fav{position:static;flex:none}
+.demo{background:var(--wbg);color:var(--wink);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:10px}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:8px 16px 24px}
+footer a{color:var(--gink)}
 </style>
 </head>
 <body>
@@ -118,6 +121,7 @@ header{border-radius:0;border-bottom:1px solid var(--line);background:rgba(7,16,
   <label class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
 </header>
 <main id="main"></main>
+<footer><a href="integritetspolicy.html">Integritetspolicy</a> · <a href="om-oss.html">Om Fyndaren</a> · hej@fyndaren.se</footer>
 <nav aria-label="Huvudmeny">
   <button data-tab="offers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
   <button data-tab="compare"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
@@ -139,6 +143,7 @@ const HERO=[
 {t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#f43f5e,#f472b6)'},
 {t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#f59e0b,#fbbf24)'}
 ];
+const DEMO=true; // sätt till false när riktiga erbjudanden är inlagda
 let CODES=[];
 const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
 let DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
@@ -179,7 +184,7 @@ function offers(){
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
   else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
   else body=`<div class="grid">${list.map(card).join('')}</div>`;
-  return `<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>🔥 Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>🔥 Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join('')}</div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
   <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
