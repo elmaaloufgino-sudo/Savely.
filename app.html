@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fyndaren – Smarta priser & dagens bästa kap</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0A0A0C">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fyndaren">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Cinzel:wght@600;700&display=swap">
+<style>
+:root{--bg:#0A0A0C;--card:#141416;--ink:#ffffff;--mute:#a1a1aa;--head:#0A0A0C;--green:#D4AF37;--gink:#E6CA65;--wbg:#2a2208;--wink:#E6CA65;--line:rgba(255,255,255,.1);--chip:#141416;--nav:#0A0A0C;--grad:linear-gradient(135deg,#D4AF37,#E6CA65);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:520px;margin-inline:auto;padding-bottom:84px;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--head);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--head);padding:14px 16px 16px;border-radius:0 0 28px 28px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:46px;height:46px;border-radius:14px;background:#34d399;display:grid;place-items:center;font-size:24px}
+.brand h1{margin:0;font-size:24px;line-height:1.1;color:#fff;font-weight:800}
+.brand p{margin:2px 0 0;font-size:13px;color:#34d399}
+.sp{flex:1}
+.hb{position:relative;width:46px;height:46px;border-radius:50%;border:0;background:#334155;color:#fff;display:grid;place-items:center;cursor:pointer}
+.hb i{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#34d399;color:#0f172a;font-family:inherit;font-weight:700;font-size:11px;line-height:20px;font-style:normal;text-align:center}
+.search{margin-top:14px;display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:0 14px}
+.search input{flex:1;border:0;outline:0;background:none;height:46px;font:inherit;font-size:15px;color:#0f172a}
+.search svg{color:#94a3b8;flex:none}
+main{padding:16px}
+h2{display:flex;align-items:center;gap:8px;font-size:18px;margin:18px 0 12px;font-weight:800}
+h2 .n{margin-left:auto;font-size:13px;font-weight:400;color:var(--mute)}
+.hero{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
+.hero::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+.hc{flex:0 0 78%;scroll-snap-align:start;border:0;text-align:left;color:#fff;border-radius:22px;padding:20px;font:inherit;cursor:pointer;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end}
+.hc small{align-self:flex-start;background:rgba(255,255,255,.25);border-radius:12px;padding:3px 10px;font-size:11px;margin-bottom:auto}
+.hc b{font-size:21px;line-height:1.2;margin-top:12px}
+.hc span{font-size:14px;opacity:.9;margin-top:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:16px -16px 0;padding:0 16px 4px;scrollbar-width:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:22px;padding:10px 18px;font-family:inherit;font-weight:600;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{position:relative;background:var(--card);border-radius:20px;padding:14px;box-shadow:0 1px 3px rgba(15,23,42,.08);display:flex;flex-direction:column}
+.badge{position:absolute;top:12px;left:12px;background:var(--green);color:#fff;font-weight:700;font-size:13px;border-radius:12px;padding:3px 9px}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--bg);color:var(--mute);display:grid;place-items:center;cursor:pointer}
+.fav.on{color:#f43f5e}.fav.on svg{fill:#f43f5e}
+.logo{width:56px;height:56px;border-radius:16px;color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;margin:30px auto 10px}
+.store{font-size:13px;color:var(--mute)}
+.card h3{margin:2px 0 10px;font-size:16px;line-height:1.25;min-height:40px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price b{font-size:21px;color:var(--gink)}
+.price s{font-size:13px;color:var(--mute)}
+.mute{font-size:13px;color:var(--mute);margin-top:2px}
+.mem{align-self:flex-start;margin-top:8px;background:var(--wbg);color:var(--wink);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:600}
+.exp{margin-top:auto;padding-top:10px;font-size:12px;color:var(--mute)}
+.sw{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:14px;color:var(--mute)}
+.sw button{width:44px;height:26px;border-radius:13px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none}
+.sw button::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw button[aria-pressed="true"]{background:var(--green)}
+.sw button[aria-pressed="true"]::after{transform:translateX(18px)}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.row .logo{margin:0;width:46px;height:46px;font-size:12px;border-radius:14px;flex:none}
+.row .t{flex:1;min-width:0}.row .t b{display:block;font-size:15px;overflow-wrap:anywhere}.row .t span{font-size:13px;color:var(--mute)}
+.best{border:2px solid var(--green)}
+.tag{font-size:12px;font-weight:700;color:var(--gink)}
+.code{border:2px dashed var(--green);background:none;color:var(--gink);font-family:inherit;font-weight:800;font-size:14px;border-radius:12px;padding:9px 12px;cursor:pointer;letter-spacing:.04em}
+.sum{background:var(--head);color:#fff;border-radius:20px;padding:18px;margin-bottom:14px}
+.sum b{display:block;font-size:28px;color:#34d399}
+.empty{text-align:center;color:var(--mute);padding:40px 20px}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:var(--nav);border-top:1px solid var(--line);display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:9}
+nav button{flex:1;border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;padding:6px 0}
+nav button[aria-current="page"]{color:var(--gink)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:14px;padding:11px 18px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;align-items:end;justify-items:center;z-index:30}
+.sheet{background:var(--card);width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet h2{margin:0 0 4px}.sheet p{margin:0 0 6px;color:var(--mute);font-size:14px}
+.sheet input{width:100%;height:48px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);padding:0 14px;font:inherit;font-size:16px;margin-top:10px}
+.btn{width:100%;height:48px;border:0;border-radius:14px;background:var(--green);color:#fff;font-family:inherit;font-weight:700;font-size:16px;margin-top:12px;cursor:pointer;padding:0 20px}
+.btn.ghost{background:none;color:var(--gink);border:1px solid var(--line)}
+.msg{min-height:20px;margin-top:10px;font-size:14px;color:var(--wink)}
+button:focus-visible,input:focus-visible{outline:3px solid #34d399;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+header{border-radius:0;border-bottom:1px solid var(--line);background:rgba(7,16,14,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.search{background:var(--chip);border:1px solid var(--line);border-radius:14px}
+.search input{color:var(--ink)}
+.search:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+.chip[aria-pressed="true"]{color:#07100e}
+.stats{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#0f1c18,#152722);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:6px}
+.stats small{display:block;color:var(--mute);font-size:13px}.stats b{font-size:22px;color:var(--gink)}
+.stats .si{width:46px;height:46px;border-radius:12px;background:rgba(16,185,129,.15);display:grid;place-items:center;font-size:20px}
+.grid{display:flex;flex-direction:column;gap:12px}
+.card{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);box-shadow:none}
+.card:hover{background:#1b322b}
+.card .logo{width:76px;height:76px;margin:0;position:relative;font-size:15px}
+.card .badge{top:5px;left:5px;font-size:11px;padding:2px 6px;border-radius:6px;background:#ef4444}
+.card .info{min-width:0}
+.card .store{font-size:12px;color:var(--gink);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.card h3{margin:2px 0 6px;min-height:0;font-size:15px}
+.card .exp{margin-top:0;padding-top:6px}
+.card .fav{position:static;flex:none}
+.demo{background:var(--wbg);color:var(--wink);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:10px}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:8px 16px 24px}
+footer a{color:var(--gink)}
+
+/* ===== Lyxtema: onyx och guld ===== */
+body{background:radial-gradient(120% 60% at 50% -10%,#1a1608,#0A0A0C 55%) fixed}
+body::after{content:"";position:fixed;top:-160px;left:50%;width:560px;height:380px;max-width:140vw;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(212,175,55,.2),transparent);filter:blur(28px);animation:glow 8s ease-in-out infinite;pointer-events:none;z-index:0}
+main,footer{position:relative;z-index:1}
+header{background:rgba(10,10,12,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(212,175,55,.18)}
+.brand h1,h2,.stats b,.sum b{font-family:Cinzel,Georgia,serif}
+.brand h1{text-transform:uppercase;letter-spacing:.14em;font-size:22px}
+.brand p{color:var(--gink)}
+.mark{box-shadow:0 0 0 1px rgba(212,175,55,.55),0 6px 22px rgba(212,175,55,.25)}
+.hb{background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.hb i{background:var(--grad);color:#0A0A0C}
+.search{background:rgba(255,255,255,.04);border:1px solid var(--line);transition:box-shadow .3s,border-color .3s}
+.search:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(212,175,55,.22),0 0 44px rgba(212,175,55,.25)}
+.hc{border:1px solid rgba(212,175,55,.3);transition:transform .35s,box-shadow .35s}
+.hc:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(212,175,55,.25)}
+.chip{background:rgba(255,255,255,.04);transition:all .25s}.chip:hover{border-color:var(--green)}
+.chip[aria-pressed="true"]{background:var(--grad);border-color:transparent;color:#0A0A0C;font-weight:700}
+.stats{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(255,255,255,.03));border:1px solid rgba(212,175,55,.3);box-shadow:0 0 40px rgba(212,175,55,.08)}
+.stats b{color:var(--gink)}.stats .si{background:rgba(212,175,55,.15)}
+.card,.row{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .35s,box-shadow .35s,border-color .35s}
+@media(hover:hover){.card:hover{transform:translateY(-5px);border-color:rgba(212,175,55,.55);box-shadow:0 16px 44px rgba(212,175,55,.22);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03))}.card:hover .logo{transform:scale(1.06)}}
+.card .logo{transition:transform .5s ease;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.card .badge{background:var(--grad);color:#0A0A0C;font-weight:800}
+.fav{background:rgba(255,255,255,.06);border:1px solid var(--line);transition:transform .2s,border-color .2s}
+.fav:active{transform:scale(.9)}.fav.on{color:var(--gink);border-color:rgba(212,175,55,.6)}.fav.on svg{fill:var(--gink)}
+.fav.pop svg{animation:pop .45s}
+.best{border:1px solid var(--green);box-shadow:0 0 24px rgba(212,175,55,.2)}
+.btn{background:var(--grad);color:#0A0A0C;transition:transform .25s,box-shadow .25s}.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(212,175,55,.35)}
+.btn.ghost{background:none;color:var(--gink);border:1px solid var(--line)}
+.sum{background:linear-gradient(135deg,#1a1608,#0f0f12);border:1px solid rgba(212,175,55,.35)}.sum b{color:var(--gink)}
+nav{background:rgba(10,10,12,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(212,175,55,.18)}
+nav button{transition:color .25s,transform .25s}
+nav button[aria-current="page"]{color:var(--gink);filter:drop-shadow(0 0 8px rgba(212,175,55,.45))}
+nav button:active{transform:scale(.94)}
+.toast{background:#1a1608;border:1px solid var(--green);color:var(--gink)}
+.demo{border:1px solid rgba(212,175,55,.3)}
+.enter{animation:fade .4s both}.enter .card,.enter .row{animation:up .55s both}
+.skel{height:108px;border:0;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.11),rgba(255,255,255,.04));background-size:200% 100%;animation:shim 1.4s linear infinite}
+@keyframes glow{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes shim{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== Förfining: bredare layout, sökruta, kategorier, meny ===== */
+body{max-width:1100px;padding-bottom:104px}
+main{padding:16px 24px}
+header{padding-inline:24px}
+.search{max-width:680px;margin-inline:auto;border-color:rgba(212,175,55,.35);box-shadow:0 0 28px rgba(212,175,55,.14)}
+.chips{flex-wrap:wrap;justify-content:center;overflow:visible;margin:16px 0 0;padding:0}
+.chip{padding:9px 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+#main .row,#main .sum{max-width:720px;margin-inline:auto}
+.card .cat{color:var(--mute);font-weight:500;text-transform:none;letter-spacing:0}
+nav button{position:relative}
+nav button svg{box-sizing:content-box;padding:7px;border-radius:50%;border:1px solid rgba(212,175,55,.35);background:rgba(212,175,55,.1);transition:background .25s,border-color .25s}
+nav button[aria-current="page"] svg{background:rgba(212,175,55,.22);border-color:var(--green)}
+.nb{position:absolute;top:0;left:calc(50% + 8px);min-width:18px;height:18px;border-radius:9px;background:var(--grad);color:#0A0A0C;font-weight:800;font-size:11px;line-height:18px;font-style:normal;text-align:center;padding:0 5px}
+.nb[hidden]{display:none}
+.modal{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.sheet{border:1px solid rgba(212,175,55,.35)}
+.hc{flex-basis:min(78%,420px)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img class="mark" src="icon-192.png" alt="" width="46" height="46">
+    <div><h1>Fyndaren</h1><p>Smarta priser & dagens bästa kap</p></div>
+    <div class="sp"></div>
+    <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
+  </div>
+  <label class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
+</header>
+<main id="main"></main>
+<footer><a href="integritetspolicy.html">Integritetspolicy</a> · <a href="om-oss.html">Om Fyndaren</a> · hej@fyndaren.se</footer>
+<nav aria-label="Huvudmeny">
+  <button data-tab="offers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
+  <button data-tab="compare"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
+  <button data-tab="codes"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Rabattkoder</button>
+  <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista<i class="nb" id="navCnt" hidden>0</i></button>
+</nav>
+<div id="modal"></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
+const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
+let sb=null;
+try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+
+const HERO=[
+{t:'Superklipp på ICA Maxi',s:'Upp till 40 % på kött och chark',cat:'Mat',bg:'linear-gradient(135deg,#2b2209,#6b5416)'},
+{t:'20 % på elektronik',s:'Elgiganten, hela helgen',cat:'Elektronik',bg:'linear-gradient(135deg,#1c1c20,#4a4a52)'},
+{t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#3a1f12,#8a5a2b)'},
+{t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#3b2f0a,#8f7222)'}
+];
+const DEMO=true; // sätt till false när riktiga erbjudanden är inlagda
+let CODES=[];
+const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
+const ICONS={Mat:'🛒',Elektronik:'📱',Apotek:'💊',Kläder:'👕'};
+let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const colr=c=>/^#[0-9a-f]{3,8}$/i.test(c||'')?c:'#64748b';
+const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+' kr';
+const pct=o=>Math.round((1-o.p/o.o)*100);
+const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
+const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const norm=r=>({id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
+
+async function loadDeals(){
+  loading=true;err='';render();
+  if(!sb){loading=false;err='Appen kunde inte starta. Ladda om sidan.';render();return}
+  const {data,error}=await sb.from('deals').select('*').order('id');
+  loading=false;
+  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
+  const cr=await sb.from('codes').select('*').order('id');
+  if(!cr.error)CODES=cr.data.map(r=>({s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
+  anim=true;render();
+}
+async function loadFavs(){
+  if(!sb||!user){favs=new Set();render();return}
+  const {data,error}=await sb.from('favorites').select('deal_id');
+  if(!error)favs=new Set(data.map(r=>r.deal_id));
+  render();
+}
+
+function card(o){const f=favs.has(o.id);return `<article class="card"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}<span class="badge">-${pct(o)}%</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><b>${kr(o.p)}</b><s>${kr(o.o)}</s></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></div><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button></article>`}
+
+function offers(){
+  const t=q.trim().toLowerCase();
+  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.s+' '+o.n+' '+o.c).toLowerCase().includes(t)));
+  let body;
+  if(loading)body='<div class="grid" aria-busy="true" aria-label="Hämtar erbjudanden">'+'<div class="card skel"></div>'.repeat(4)+'</div>';
+  else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
+  else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
+  else body=`<div class="grid">${list.map(card).join('')}</div>`;
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
+  <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
+  <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
+
+function compare(){
+  const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
+  if(!gs.length)return `<h2>Jämför jämförpris</h2><div class="empty"><b>${loading?'Hämtar…':'Inget att jämföra ännu'}</b></div>`;
+  if(!gs.includes(cmp))cmp=gs[0];
+  const items=DATA.filter(o=>o.g===cmp&&o.uv!=null).sort((a,b)=>a.uv-b.uv);
+  const best=items[0].uv;
+  return `<h2>Jämför jämförpris</h2><div class="chips" style="margin-top:0" role="group" aria-label="Produkter">${gs.map(g=>`<button class="chip" data-cmp="${esc(g)}" aria-pressed="${g===cmp}">${esc(g)}</button>`).join('')}</div>
+  <h2 style="font-size:15px;color:var(--mute);font-weight:600">Billigast per kilo överst</h2>
+  ${items.map((o,i)=>`<div class="row ${i?'':'best'}"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}</div><div class="t"><b>${esc(o.s)}: ${kr(o.p)}</b><span>${esc(o.n)} · ${esc(o.u)}${o.m?' · kräver '+esc(o.m):''}</span></div>${i?`<span class="mute">+${Math.round((o.uv/best-1)*100)} %</span>`:'<span class="tag">Billigast</span>'}</div>`).join('')}`}
+
+function codes(){
+  if(loading)return '<h2>Rabattkoder</h2><div class="empty"><b>Hämtar rabattkoder…</b></div>';
+  if(!CODES.length)return '<h2>Rabattkoder</h2><div class="empty"><b>Inga rabattkoder just nu</b>Kom tillbaka snart.</div>';
+  return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${colr(c.col)}">${esc(c.l)}</div><div class="t"><b>${esc(c.s)}</b><span>${esc(c.d)}</span></div><button class="code" data-copy="${esc(c.code)}" aria-label="Kopiera koden ${esc(c.code)}">${esc(c.code)}</button></div>`).join('')}`}
+
+function list(){
+  const items=DATA.filter(o=>favs.has(o.id));
+  const saved=items.reduce((a,o)=>a+o.o-o.p,0);
+  const acct=`<div class="row"><div class="t"><b>${user?esc(user.email):'Du är inte inloggad'}</b><span>${user?'Din sparlista följer med på alla enheter.':'Logga in för att spara erbjudanden.'}</span></div><button class="code" ${user?'data-logout':'data-login'}>${user?'Logga ut':'Logga in'}</button></div>`;
+  if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
+  return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
+
+function countUp(el,end){if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=end+' st';return}const t0=performance.now();(function s(t){const k=Math.min((t-t0)/1000,1);el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+' st';if(k<1)requestAnimationFrame(s)})(t0)}
+function render(){
+  const mainEl=$('#main');mainEl.innerHTML={offers,compare,codes,list}[tab]();
+  mainEl.classList.toggle('enter',anim);
+  if(anim){mainEl.querySelectorAll('.card,.row').forEach((c,i)=>c.style.animationDelay=Math.min(i,12)*55+'ms');const sb=mainEl.querySelector('.stats b');if(sb&&DATA.length)countUp(sb,DATA.length)}
+  anim=false;
+  $('#cnt').textContent=favs.size;const nc=$('#navCnt');nc.textContent=favs.size;nc.hidden=!favs.size;
+  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+
+function openAuth(note){
+  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Fyndaren</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
+  setTimeout(()=>{const e=$('#em');if(e)e.focus()},50);
+}
+function closeAuth(){$('#modal').innerHTML=''}
+const setMsg=m=>{const e=$('#msg');if(e)e.textContent=m};
+
+async function doAuth(mode){
+  if(!sb)return setMsg('Appen kunde inte starta. Ladda om sidan.');
+  const email=$('#em').value.trim(),pw=$('#pw').value;
+  if(!email||pw.length<6)return setMsg('Fyll i e-post och ett lösenord på minst 6 tecken.');
+  setMsg('Vänta…');
+  if(mode==='up'){
+    const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.href.split('#')[0]}});
+    if(error)return setMsg(error.message);
+    if(data.session){closeAuth();toast('Kontot är skapat')}
+    else setMsg('Vi har skickat ett bekräftelsemail. Öppna länken i mejlet och logga sedan in.');
+  }else{
+    const {error}=await sb.auth.signInWithPassword({email,password:pw});
+    if(error){
+      const m=error.message||'';
+      return setMsg(m.includes('Invalid login')?'Fel e-post eller lösenord.':m.includes('not confirmed')?'Bekräfta din e-post först. Kolla din inkorg.':m);
+    }
+    closeAuth();toast('Du är inloggad');
+  }
+}
+
+async function toggleFav(id){
+  if(!user){openAuth('Logga in för att spara erbjudanden i din sparlista.');return}
+  const had=favs.has(id);
+  had?favs.delete(id):favs.add(id);popId=had?null:id;render();popId=null;
+  const r=had?await sb.from('favorites').delete().eq('deal_id',id).eq('user_id',user.id):await sb.from('favorites').insert({deal_id:id});
+  if(r.error){had?favs.add(id):favs.delete(id);render();toast('Det gick inte att spara. Försök igen.')}
+  else toast(had?'Borttagen från sparlistan':'Sparad i sparlistan');
+}
+
+document.addEventListener('click',e=>{
+  if(e.target.matches('[data-close]')){closeAuth();return}
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.tab){tab=d.tab;anim=true;render();scrollTo(0,0)}
+  else if(d.fav){toggleFav(+d.fav)}
+  else if(d.cat){cat=d.cat;anim=true;render()}
+  else if(d.hero){cat=HERO[+d.hero].cat;anim=true;render();$('.chips').scrollIntoView({behavior:'smooth'})}
+  else if(d.mem!==undefined){hideMem=!hideMem;anim=true;render()}
+  else if(d.cmp){cmp=d.cmp;anim=true;render()}
+  else if(d.retry!==undefined){loadDeals()}
+  else if(d.login!==undefined){openAuth()}
+  else if(d.logout!==undefined){sb.auth.signOut().then(()=>toast('Du är utloggad'))}
+  else if(d.auth){doAuth(d.auth)}
+  else if(d.copy){const c=d.copy;try{navigator.clipboard.writeText(c).then(()=>toast('Koden '+c+' är kopierad'),()=>toast('Din kod: '+c))}catch(x){toast('Din kod: '+c)}}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeAuth();
+  if(e.key==='Enter'&&e.target.closest('.sheet'))doAuth('in');
+});
+$('#q').addEventListener('input',e=>{q=e.target.value;if(tab!=='offers')tab='offers';render()});
+
+if(sb){
+  sb.auth.onAuthStateChange((ev,session)=>{
+    user=session?session.user:null;
+    setTimeout(loadFavs,0);
+  });
+}
+loadDeals();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+</script>
+</body>
+</html>
