@@ -172,9 +172,44 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.22);border-color
 .modal{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .sheet{border:1px solid rgba(212,175,55,.35)}
 .hc{flex-basis:min(78%,420px)}
+
+/* ===== Kort två och två på mobil, rullande fyndlista ===== */
+.ticker{overflow:hidden;white-space:nowrap;background:linear-gradient(90deg,rgba(212,175,55,.16),rgba(212,175,55,.06),rgba(212,175,55,.16));border-bottom:1px solid rgba(212,175,55,.3);padding:7px 0;position:relative;z-index:1}
+.ticker[hidden]{display:none}
+.tk{display:inline-flex;animation:tick 34s linear infinite}
+.ticker:hover .tk,.ticker:focus-within .tk{animation-play-state:paused}
+.ti{display:inline-flex;align-items:center;gap:8px;margin-right:44px;font-size:13px;font-weight:700;color:#f3e5ab;background:none;border:0;cursor:pointer;font-family:inherit}
+.tg{background:var(--grad);color:#0A0A0C;border-radius:6px;padding:1px 8px;font-size:10px;font-weight:800;letter-spacing:.06em}
+@keyframes tick{to{transform:translateX(-50%)}}
+.brand h1{background:linear-gradient(135deg,#fff 40%,#f3e5ab);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.grid{grid-template-columns:repeat(2,1fr);gap:12px}
+.card{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
+.tile{position:relative;height:112px;display:grid;place-items:center;overflow:hidden;background:var(--tc)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.32));pointer-events:none}
+.tl{position:relative;z-index:1;font-weight:800;font-size:26px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .5s ease}
+.card:hover .tl{transform:scale(1.12)}
+.tile .badge{z-index:2;top:8px;left:8px}
+.tile .fav{position:absolute;z-index:2;top:6px;right:6px;width:34px;height:34px;background:rgba(10,10,12,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.fav:hover{transform:scale(1.12)}
+.ptag{position:absolute;z-index:2;right:8px;bottom:8px;background:var(--grad);color:#0A0A0C;font-weight:800;font-size:13px;padding:4px 10px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.card .info{padding:12px}
+.card h3{font-size:14px;line-height:1.25;min-height:0;margin:2px 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .price{gap:8px;margin-top:0}
+.card .price s{font-size:12px}
+.sv{font-size:12px;color:var(--gink);font-weight:700}
+.card.skel{height:210px}
+@media(min-width:768px){.grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}.tile{height:140px}.card h3{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.ticker{overflow-x:auto}}
+
+/* ===== Extra glans (från ny designprompt) ===== */
+body{background:radial-gradient(circle at 100% 60%,rgba(16,185,129,.06),transparent 40%) fixed,radial-gradient(120% 60% at 50% -10%,#1a1608,#0A0A0C 55%) fixed}
+nav button:hover svg{transform:translateY(-2px);box-shadow:0 0 15px rgba(212,175,55,.3)}
+.sheet{box-shadow:0 15px 40px rgba(0,0,0,.9),0 0 30px rgba(212,175,55,.25)}
+.chip:hover{box-shadow:0 0 15px rgba(212,175,55,.25)}
 </style>
 </head>
 <body>
+<div class="ticker" id="ticker" hidden role="region" aria-label="Heta och nya erbjudanden"><div class="tk" id="tk"></div></div>
 <header>
   <div class="brand">
     <img class="mark" src="icon-192.png" alt="" width="46" height="46">
@@ -230,7 +265,7 @@ async function loadDeals(){
   if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
   const cr=await sb.from('codes').select('*').order('id');
   if(!cr.error)CODES=cr.data.map(r=>({s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
-  anim=true;render();
+  renderTicker();anim=true;render();
 }
 async function loadFavs(){
   if(!sb||!user){favs=new Set();render();return}
@@ -239,7 +274,7 @@ async function loadFavs(){
   render();
 }
 
-function card(o){const f=favs.has(o.id);return `<article class="card"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}<span class="badge">-${pct(o)}%</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><b>${kr(o.p)}</b><s>${kr(o.o)}</s></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></div><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button></article>`}
+function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></div></article>`}
 
 function offers(){
   const t=q.trim().toLowerCase();
@@ -276,6 +311,17 @@ function list(){
   if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
   return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
 
+function renderTicker(){
+  const t=$('#ticker'),tk=$('#tk');
+  if(!DATA.length){t.hidden=true;return}
+  const hot=[...DATA].sort((a,b)=>pct(b)-pct(a)).slice(0,3).map(o=>({o,tag:'HETT',txt:`${o.s} ${o.n} −${pct(o)} %`}));
+  const ids=new Set(hot.map(x=>x.o.id));
+  const fresh=[...DATA].sort((a,b)=>b.id-a.id).filter(o=>!ids.has(o.id)).slice(0,2).map(o=>({o,tag:'NYTT',txt:`${o.s} ${o.n} ${kr(o.p)}`}));
+  let items=[...hot,...fresh];while(items.length<8)items=items.concat(items);
+  const html=items.map(x=>`<button class="ti" data-tick="${x.o.id}"><span class="tg">${x.tag}</span>${esc(x.txt)}</button>`).join('');
+  tk.innerHTML=html+html.replace(/<button /g,'<button tabindex="-1" aria-hidden="true" ');
+  t.hidden=false;
+}
 function countUp(el,end){if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=end+' st';return}const t0=performance.now();(function s(t){const k=Math.min((t-t0)/1000,1);el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+' st';if(k<1)requestAnimationFrame(s)})(t0)}
 function render(){
   const mainEl=$('#main');mainEl.innerHTML={offers,compare,codes,list}[tab]();
@@ -327,6 +373,7 @@ document.addEventListener('click',e=>{
   if(e.target.matches('[data-close]')){closeAuth();return}
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.tab){tab=d.tab;anim=true;render();scrollTo(0,0)}
+  else if(d.tick){const o=DATA.find(x=>x.id===+d.tick);if(o){q=o.n;$('#q').value=o.n;cat='Alla';tab='offers';anim=true;render();(document.querySelector('.grid')||document.body).scrollIntoView({behavior:'smooth'})}}
   else if(d.fav){toggleFav(+d.fav)}
   else if(d.cat){cat=d.cat;anim=true;render()}
   else if(d.hero){cat=HERO[+d.hero].cat;anim=true;render();$('.chips').scrollIntoView({behavior:'smooth'})}
