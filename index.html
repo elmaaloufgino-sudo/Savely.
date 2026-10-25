@@ -1,288 +1,265 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" class="scroll-smooth">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fyndaren – Smarta priser & dagens bästa kap</title>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#07100e">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fyndaren – Veckans bästa fynd och rabattkoder på ett ställe</title>
+<meta name="description" content="Fyndaren samlar erbjudanden, jämförpriser och rabattkoder från svenska butiker. Spara dina favoriter och installera som app gratis.">
+<meta name="theme-color" content="#0A0A0C">
+<link rel="canonical" href="https://fyndaren.se/">
 <link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-180.png">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Fyndaren">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
-<style>
-:root{--bg:#07100e;--card:#152722;--ink:#f3f4f6;--mute:#9ca3af;--head:#0b1713;--green:#10b981;--gink:#34d399;--wbg:#3b2f12;--wink:#fcd34d;--line:rgba(255,255,255,.08);--chip:#0f1c18;--nav:#0b1713;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:520px;margin-inline:auto;padding-bottom:84px;min-height:100vh}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--head);z-index:10}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--head);padding:14px 16px 16px;border-radius:0 0 28px 28px}
-.brand{display:flex;align-items:center;gap:12px}
-.mark{width:46px;height:46px;border-radius:14px;background:#34d399;display:grid;place-items:center;font-size:24px}
-.brand h1{margin:0;font-size:24px;line-height:1.1;color:#fff;font-weight:800}
-.brand p{margin:2px 0 0;font-size:13px;color:#34d399}
-.sp{flex:1}
-.hb{position:relative;width:46px;height:46px;border-radius:50%;border:0;background:#334155;color:#fff;display:grid;place-items:center;cursor:pointer}
-.hb i{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#34d399;color:#0f172a;font:700 11px/20px inherit;font-style:normal;text-align:center}
-.search{margin-top:14px;display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:0 14px}
-.search input{flex:1;border:0;outline:0;background:none;height:46px;font:inherit;font-size:15px;color:#0f172a}
-.search svg{color:#94a3b8;flex:none}
-main{padding:16px}
-h2{display:flex;align-items:center;gap:8px;font-size:18px;margin:18px 0 12px;font-weight:800}
-h2 .n{margin-left:auto;font-size:13px;font-weight:400;color:var(--mute)}
-.hero{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
-.hero::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
-.hc{flex:0 0 78%;scroll-snap-align:start;border:0;text-align:left;color:#fff;border-radius:22px;padding:20px;font:inherit;cursor:pointer;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end}
-.hc small{align-self:flex-start;background:rgba(255,255,255,.25);border-radius:12px;padding:3px 10px;font-size:11px;margin-bottom:auto}
-.hc b{font-size:21px;line-height:1.2;margin-top:12px}
-.hc span{font-size:14px;opacity:.9;margin-top:2px}
-.chips{display:flex;gap:8px;overflow-x:auto;margin:16px -16px 0;padding:0 16px 4px;scrollbar-width:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:22px;padding:10px 18px;font:600 15px inherit;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{position:relative;background:var(--card);border-radius:20px;padding:14px;box-shadow:0 1px 3px rgba(15,23,42,.08);display:flex;flex-direction:column}
-.badge{position:absolute;top:12px;left:12px;background:var(--green);color:#fff;font-weight:700;font-size:13px;border-radius:12px;padding:3px 9px}
-.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:var(--bg);color:var(--mute);display:grid;place-items:center;cursor:pointer}
-.fav.on{color:#f43f5e}.fav.on svg{fill:#f43f5e}
-.logo{width:56px;height:56px;border-radius:16px;color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;margin:30px auto 10px}
-.store{font-size:13px;color:var(--mute)}
-.card h3{margin:2px 0 10px;font-size:16px;line-height:1.25;min-height:40px}
-.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.price b{font-size:21px;color:var(--gink)}
-.price s{font-size:13px;color:var(--mute)}
-.mute{font-size:13px;color:var(--mute);margin-top:2px}
-.mem{align-self:flex-start;margin-top:8px;background:var(--wbg);color:var(--wink);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:600}
-.exp{margin-top:auto;padding-top:10px;font-size:12px;color:var(--mute)}
-.sw{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:14px;color:var(--mute)}
-.sw button{width:44px;height:26px;border-radius:13px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none}
-.sw button::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s}
-.sw button[aria-pressed="true"]{background:var(--green)}
-.sw button[aria-pressed="true"]::after{transform:translateX(18px)}
-.row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
-.row .logo{margin:0;width:46px;height:46px;font-size:12px;border-radius:14px;flex:none}
-.row .t{flex:1;min-width:0}.row .t b{display:block;font-size:15px;overflow-wrap:anywhere}.row .t span{font-size:13px;color:var(--mute)}
-.best{border:2px solid var(--green)}
-.tag{font-size:12px;font-weight:700;color:var(--gink)}
-.code{border:2px dashed var(--green);background:none;color:var(--gink);font:800 14px inherit;border-radius:12px;padding:9px 12px;cursor:pointer;letter-spacing:.04em}
-.sum{background:var(--head);color:#fff;border-radius:20px;padding:18px;margin-bottom:14px}
-.sum b{display:block;font-size:28px;color:#34d399}
-.empty{text-align:center;color:var(--mute);padding:40px 20px}
-.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
-.empty .btn{margin-top:16px}
-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:var(--nav);border-top:1px solid var(--line);display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:9}
-nav button{flex:1;border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font:600 12px inherit;cursor:pointer;padding:6px 0}
-nav button[aria-current="page"]{color:var(--gink)}
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:14px;padding:11px 18px;font-size:14px;z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
-.toast.show{opacity:1}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;align-items:end;justify-items:center;z-index:30}
-.sheet{background:var(--card);width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
-.sheet h2{margin:0 0 4px}.sheet p{margin:0 0 6px;color:var(--mute);font-size:14px}
-.sheet input{width:100%;height:48px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);padding:0 14px;font:inherit;font-size:16px;margin-top:10px}
-.btn{width:100%;height:48px;border:0;border-radius:14px;background:var(--green);color:#fff;font:700 16px inherit;margin-top:12px;cursor:pointer;padding:0 20px}
-.btn.ghost{background:none;color:var(--gink);border:1px solid var(--line)}
-.msg{min-height:20px;margin-top:10px;font-size:14px;color:var(--wink)}
-button:focus-visible,input:focus-visible{outline:3px solid #34d399;outline-offset:2px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-
-header{border-radius:0;border-bottom:1px solid var(--line);background:rgba(7,16,14,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.search{background:var(--chip);border:1px solid var(--line);border-radius:14px}
-.search input{color:var(--ink)}
-.search:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
-.chip[aria-pressed="true"]{color:#07100e}
-.stats{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#0f1c18,#152722);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:6px}
-.stats small{display:block;color:var(--mute);font-size:13px}.stats b{font-size:22px;color:var(--gink)}
-.stats .si{width:46px;height:46px;border-radius:12px;background:rgba(16,185,129,.15);display:grid;place-items:center;font-size:20px}
-.grid{display:flex;flex-direction:column;gap:12px}
-.card{display:grid;grid-template-columns:76px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);box-shadow:none}
-.card:hover{background:#1b322b}
-.card .logo{width:76px;height:76px;margin:0;position:relative;font-size:15px}
-.card .badge{top:5px;left:5px;font-size:11px;padding:2px 6px;border-radius:6px;background:#ef4444}
-.card .info{min-width:0}
-.card .store{font-size:12px;color:var(--gink);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.card h3{margin:2px 0 6px;min-height:0;font-size:15px}
-.card .exp{margin-top:0;padding-top:6px}
-.card .fav{position:static;flex:none}
-.demo{background:var(--wbg);color:var(--wink);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:10px}
-footer{text-align:center;color:var(--mute);font-size:13px;padding:8px 16px 24px}
-footer a{color:var(--gink)}
-</style>
-</head>
-<body>
-<header>
-  <div class="brand">
-    <img class="mark" src="icon-192.png" alt="" width="46" height="46">
-    <div><h1>Fyndaren</h1><p>Smarta priser & dagens bästa kap</p></div>
-    <div class="sp"></div>
-    <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
-  </div>
-  <label class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
-</header>
-<main id="main"></main>
-<footer><a href="integritetspolicy.html">Integritetspolicy</a> · <a href="om-oss.html">Om Fyndaren</a> · hej@fyndaren.se</footer>
-<nav aria-label="Huvudmeny">
-  <button data-tab="offers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
-  <button data-tab="compare"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
-  <button data-tab="codes"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Rabattkoder</button>
-  <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista</button>
-</nav>
-<div id="modal"></div>
-<div class="toast" id="toast" role="status"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<meta property="og:title" content="Fyndaren – Veckans bästa fynd på ett ställe">
+<meta property="og:description" content="Erbjudanden, jämförpriser och rabattkoder från svenska butiker.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
-const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
-const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
-let sb=null;
-try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+  // Tailwind-inställningar: typsnitt och färger som matchar appen
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+    colors: { ink: '#0A0A0C', surface: '#111114', card: '#16161a', emerald: { 50:'#fbf6e3',100:'#f6ecc4',200:'#efdd96',300:'#E6CA65',400:'#D4AF37',500:'#C19A2B',600:'#a8841f',700:'#7d6217',800:'#5c470f',900:'#3b2d09',950:'#211a05' } }
+  } } };
+</script>
+</head>
+<body class="bg-ink font-sans text-slate-300 antialiased">
 
-const HERO=[
-{t:'Superklipp på ICA Maxi',s:'Upp till 40 % på kött och chark',cat:'Mat',bg:'linear-gradient(135deg,#ef4444,#fb923c)'},
-{t:'20 % på elektronik',s:'Elgiganten, hela helgen',cat:'Elektronik',bg:'linear-gradient(135deg,#1d4ed8,#0ea5e9)'},
-{t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#f43f5e,#f472b6)'},
-{t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#f59e0b,#fbbf24)'}
-];
-const DEMO=true; // sätt till false när riktiga erbjudanden är inlagda
-let CODES=[];
-const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
-let DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
+<a href="#innehall" class="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-emerald-400 focus:px-4 focus:py-2 focus:text-slate-950">Hoppa till innehållet</a>
 
-const $=s=>document.querySelector(s);
-const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const colr=c=>/^#[0-9a-f]{3,8}$/i.test(c||'')?c:'#64748b';
-const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+' kr';
-const pct=o=>Math.round((1-o.p/o.o)*100);
-const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
-const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const norm=r=>({id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
+<!-- ===== HEADER: sticky navigation med logotyp, länkar, CTA och mobilmeny ===== -->
+<header class="sticky top-0 z-40 border-b border-white/10 bg-ink/85 backdrop-blur">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3" aria-label="Huvudmeny">
+    <a href="#" class="flex items-center gap-3 text-xl font-extrabold text-white">
+      <img src="icon-192.png" alt="" width="40" height="40" class="h-10 w-10 rounded-xl"> Fyndaren
+    </a>
+    <ul class="hidden items-center gap-8 text-sm font-medium md:flex">
+      <li><a class="transition hover:text-emerald-300" href="#funktioner">Funktioner</a></li>
+      <li><a class="transition hover:text-emerald-300" href="#sa-fungerar">Så fungerar det</a></li>
+      <li><a class="transition hover:text-emerald-300" href="#trygghet">Trygghet</a></li>
+      <li><a class="transition hover:text-emerald-300" href="#faq">Vanliga frågor</a></li>
+    </ul>
+    <div class="flex items-center gap-3">
+      <a href="app.html" class="hidden rounded-xl bg-emerald-400 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-300 sm:inline-block">Öppna appen</a>
+      <button id="menuBtn" class="rounded-lg p-2 text-white md:hidden" aria-label="Öppna menyn" aria-expanded="false" aria-controls="mobileMenu">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div id="mobileMenu" class="hidden border-t border-white/10 bg-surface px-5 pb-5 md:hidden">
+    <ul class="flex flex-col gap-1 py-3 text-base font-medium">
+      <li><a class="block rounded-lg px-3 py-3 hover:bg-white/5" href="#funktioner">Funktioner</a></li>
+      <li><a class="block rounded-lg px-3 py-3 hover:bg-white/5" href="#sa-fungerar">Så fungerar det</a></li>
+      <li><a class="block rounded-lg px-3 py-3 hover:bg-white/5" href="#trygghet">Trygghet</a></li>
+      <li><a class="block rounded-lg px-3 py-3 hover:bg-white/5" href="#faq">Vanliga frågor</a></li>
+    </ul>
+    <a href="app.html" class="block rounded-xl bg-emerald-400 px-5 py-3 text-center font-semibold text-slate-950">Öppna appen</a>
+  </div>
+</header>
 
-async function loadDeals(){
-  loading=true;err='';render();
-  if(!sb){loading=false;err='Appen kunde inte starta. Ladda om sidan.';render();return}
-  const {data,error}=await sb.from('deals').select('*').order('id');
-  loading=false;
-  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
-  const cr=await sb.from('codes').select('*').order('id');
-  if(!cr.error)CODES=cr.data.map(r=>({s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
-  render();
-}
-async function loadFavs(){
-  if(!sb||!user){favs=new Set();render();return}
-  const {data,error}=await sb.from('favorites').select('deal_id');
-  if(!error)favs=new Set(data.map(r=>r.deal_id));
-  render();
-}
+<main id="innehall">
 
-function card(o){const f=favs.has(o.id);return `<article class="card"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}<span class="badge">-${pct(o)}%</span></div><div class="info"><div class="store">${esc(o.s)}</div><h3>${esc(o.n)}</h3><div class="price"><b>${kr(o.p)}</b><s>${kr(o.o)}</s></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></div><button class="fav ${f?'on':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button></article>`}
+<!-- ===== HERO: rubrik, underrubrik, CTA och mobilmock-up ===== -->
+<section class="relative overflow-hidden">
+  <div class="pointer-events-none absolute -top-40 left-1/2 h-96 w-[40rem] -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" aria-hidden="true"></div>
+  <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:py-24 lg:grid-cols-2">
+    <div>
+      <p class="mb-4 inline-block rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">Gratis · Svenska butiker · Installeras som app</p>
+      <h1 class="text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-6xl">Veckans bästa fynd – <span class="text-emerald-400">på ett ställe</span></h1>
+      <p class="mt-5 max-w-xl text-lg text-slate-300">Fyndaren samlar erbjudanden, jämförpriser och rabattkoder från butiker du redan handlar hos. Spara dina favoriter och handla smartare, varje vecka.</p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="app.html" class="rounded-xl bg-emerald-400 px-7 py-3.5 text-center font-semibold text-slate-950 shadow-lg shadow-emerald-500/25 transition hover:-translate-y-0.5 hover:bg-emerald-300">Öppna appen</a>
+        <a href="#sa-fungerar" class="rounded-xl border border-white/20 px-7 py-3.5 text-center font-semibold text-white transition hover:bg-white/10">Se hur det fungerar</a>
+      </div>
+    </div>
+    <!-- Mock-up av appen (exempeldata, märkt som exempel) -->
+    <div class="mx-auto w-full max-w-xs" aria-hidden="true">
+      <div class="rounded-[2.5rem] border border-white/15 bg-surface p-4 shadow-2xl shadow-emerald-500/10">
+        <div class="mb-4 flex items-center gap-2 text-white"><img src="icon-192.png" alt="" class="h-8 w-8 rounded-lg"><b>Fyndaren</b><span class="ml-auto rounded-full bg-amber-300/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">Exempel</span></div>
+        <div class="mb-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-card p-3">
+          <div class="relative grid h-16 w-16 flex-none place-items-center rounded-xl bg-red-600 text-sm font-extrabold text-white">ICA<span class="absolute left-1 top-1 rounded bg-red-500 px-1 text-[10px]">-34%</span></div>
+          <div><p class="text-[11px] font-bold uppercase tracking-wide text-emerald-300">ICA</p><p class="text-sm font-semibold text-white">Kycklingfilé 900 g</p><p class="text-base font-extrabold text-emerald-300">79 kr <s class="text-xs font-normal text-slate-400">119 kr</s></p></div>
+        </div>
+        <div class="mb-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-card p-3">
+          <div class="relative grid h-16 w-16 flex-none place-items-center rounded-xl bg-orange-600 text-sm font-extrabold text-white">Z<span class="absolute left-1 top-1 rounded bg-red-500 px-1 text-[10px]">-34%</span></div>
+          <div><p class="text-[11px] font-bold uppercase tracking-wide text-emerald-300">Zalando</p><p class="text-sm font-semibold text-white">Nike Air Max 90</p><p class="text-base font-extrabold text-emerald-300">1 049 kr <s class="text-xs font-normal text-slate-400">1 599 kr</s></p></div>
+        </div>
+        <div class="rounded-2xl border border-dashed border-emerald-400/50 p-3 text-center text-sm text-emerald-300">Rabattkod: <b>HOST15</b></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-function offers(){
-  const t=q.trim().toLowerCase();
-  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.s+' '+o.n+' '+o.c).toLowerCase().includes(t)));
-  let body;
-  if(loading)body='<div class="empty"><b>Hämtar erbjudanden…</b></div>';
-  else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
-  else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
-  else body=`<div class="grid">${list.map(card).join('')}</div>`;
-  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>🔥 Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
-  <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join('')}</div>
-  <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
-  <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
+<!-- ===== FEATURES: sex funktioner som finns i appen idag ===== -->
+<section id="funktioner" class="mx-auto max-w-6xl px-5 py-16">
+  <h2 class="text-3xl font-extrabold text-white">Allt du behöver för att spara pengar</h2>
+  <p class="mt-3 max-w-2xl">Sex funktioner som du kan använda i appen redan i dag.</p>
+  <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Veckans erbjudanden</h3><p class="mt-2 text-sm">Se pris, ordinarie pris, rabatt i procent och när erbjudandet slutar.</p>
+    </article>
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Jämför jämförpris</h3><p class="mt-2 text-sm">Se vilken butik som är billigast per kilo, så slipper du räkna själv.</p>
+    </article>
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 0 0 6v3h18v-3a2 2 0 0 1 0-6V6H3z"/><path d="M13 6v12" stroke-dasharray="2 2"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Rabattkoder</h3><p class="mt-2 text-sm">Kopiera en kod med ett tryck och använd den i butikens kassa.</p>
+    </article>
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Sparlista</h3><p class="mt-2 text-sm">Spara fynd med hjärtat och se hur mycket du sparar totalt, på alla dina enheter.</p>
+    </article>
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Medlemskrav tydligt</h3><p class="mt-2 text-sm">Se direkt om ett erbjudande kräver medlemskap, och dölj dem med en knapp.</p>
+    </article>
+    <article class="rounded-2xl border border-white/10 bg-surface p-6 transition hover:border-emerald-400/40">
+      <div class="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-emerald-400/15 text-emerald-300"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+      <h3 class="text-lg font-semibold text-white">Installera som app</h3><p class="mt-2 text-sm">Lägg Fyndaren på hemskärmen. Ingen appbutik och ingen nedladdning behövs.</p>
+    </article>
+  </div>
+</section>
 
-function compare(){
-  const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
-  if(!gs.length)return `<h2>Jämför jämförpris</h2><div class="empty"><b>${loading?'Hämtar…':'Inget att jämföra ännu'}</b></div>`;
-  if(!gs.includes(cmp))cmp=gs[0];
-  const items=DATA.filter(o=>o.g===cmp&&o.uv!=null).sort((a,b)=>a.uv-b.uv);
-  const best=items[0].uv;
-  return `<h2>Jämför jämförpris</h2><div class="chips" style="margin-top:0" role="group" aria-label="Produkter">${gs.map(g=>`<button class="chip" data-cmp="${esc(g)}" aria-pressed="${g===cmp}">${esc(g)}</button>`).join('')}</div>
-  <h2 style="font-size:15px;color:var(--mute);font-weight:600">Billigast per kilo överst</h2>
-  ${items.map((o,i)=>`<div class="row ${i?'':'best'}"><div class="logo" style="background:${colr(o.col)}">${esc(o.l)}</div><div class="t"><b>${esc(o.s)}: ${kr(o.p)}</b><span>${esc(o.n)} · ${esc(o.u)}${o.m?' · kräver '+esc(o.m):''}</span></div>${i?`<span class="mute">+${Math.round((o.uv/best-1)*100)} %</span>`:'<span class="tag">Billigast</span>'}</div>`).join('')}`}
+<!-- ===== HUR DET FUNGERAR: tre steg ===== -->
+<section id="sa-fungerar" class="bg-surface py-16">
+  <div class="mx-auto max-w-6xl px-5">
+    <h2 class="text-3xl font-extrabold text-white">Så fungerar det</h2>
+    <ol class="mt-10 grid gap-6 md:grid-cols-3">
+      <li class="rounded-2xl border border-white/10 bg-card p-6"><span class="grid h-10 w-10 place-items-center rounded-full bg-emerald-400 font-extrabold text-slate-950">1</span><h3 class="mt-4 text-lg font-semibold text-white">Öppna Fyndaren</h3><p class="mt-2 text-sm">Bläddra bland veckans erbjudanden, filtrera på kategori eller sök efter butik och produkt.</p></li>
+      <li class="rounded-2xl border border-white/10 bg-card p-6"><span class="grid h-10 w-10 place-items-center rounded-full bg-emerald-400 font-extrabold text-slate-950">2</span><h3 class="mt-4 text-lg font-semibold text-white">Jämför och spara</h3><p class="mt-2 text-sm">Jämför jämförpris mellan butiker och spara fynden du gillar i din sparlista.</p></li>
+      <li class="rounded-2xl border border-white/10 bg-card p-6"><span class="grid h-10 w-10 place-items-center rounded-full bg-emerald-400 font-extrabold text-slate-950">3</span><h3 class="mt-4 text-lg font-semibold text-white">Handla smartare</h3><p class="mt-2 text-sm">Kopiera rabattkoden, gå till butiken och se hur mycket du har sparat.</p></li>
+    </ol>
+  </div>
+</section>
 
-function codes(){
-  if(loading)return '<h2>Rabattkoder</h2><div class="empty"><b>Hämtar rabattkoder…</b></div>';
-  if(!CODES.length)return '<h2>Rabattkoder</h2><div class="empty"><b>Inga rabattkoder just nu</b>Kom tillbaka snart.</div>';
-  return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${colr(c.col)}">${esc(c.l)}</div><div class="t"><b>${esc(c.s)}</b><span>${esc(c.d)}</span></div><button class="code" data-copy="${esc(c.code)}" aria-label="Kopiera koden ${esc(c.code)}">${esc(c.code)}</button></div>`).join('')}`}
+<!-- ===== TRYGGHET: ärliga löften i stället för påhittade omdömen ===== -->
+<section id="trygghet" class="mx-auto max-w-6xl px-5 py-16">
+  <h2 class="text-3xl font-extrabold text-white">Våra löften till dig</h2>
+  <p class="mt-3 max-w-2xl">Fyndaren är ny och under uppbyggnad. Därför lovar vi sådant som vi kan stå för.</p>
+  <div class="mt-10 grid gap-5 md:grid-cols-3">
+    <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-6"><h3 class="text-lg font-semibold text-white">Gratis att använda</h3><p class="mt-2 text-sm">Du betalar aldrig för att se erbjudanden, jämföra priser eller spara fynd.</p></div>
+    <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-6"><h3 class="text-lg font-semibold text-white">Tydligt om pengar</h3><p class="mt-2 text-sm">Vi kan få provision via butikslänkar. De märks alltid som annonslänkar och kostar dig ingenting extra.</p></div>
+    <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/5 p-6"><h3 class="text-lg font-semibold text-white">Dina uppgifter är dina</h3><p class="mt-2 text-sm">Vi säljer aldrig dina uppgifter. Läs allt i vår <a class="text-emerald-300 underline" href="integritetspolicy.html">integritetspolicy</a>.</p></div>
+  </div>
+</section>
 
-function list(){
-  const items=DATA.filter(o=>favs.has(o.id));
-  const saved=items.reduce((a,o)=>a+o.o-o.p,0);
-  const acct=`<div class="row"><div class="t"><b>${user?esc(user.email):'Du är inte inloggad'}</b><span>${user?'Din sparlista följer med på alla enheter.':'Logga in för att spara erbjudanden.'}</span></div><button class="code" ${user?'data-logout':'data-login'}>${user?'Logga ut':'Logga in'}</button></div>`;
-  if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
-  return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
+<!-- ===== FAQ: interaktivt dragspel ===== -->
+<section id="faq" class="bg-surface py-16">
+  <div class="mx-auto max-w-3xl px-5">
+    <h2 class="text-3xl font-extrabold text-white">Vanliga frågor</h2>
+    <div class="mt-8 divide-y divide-white/10 rounded-2xl border border-white/10 bg-card">
+      <div>
+        <h3><button class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-white" aria-expanded="false" aria-controls="f1">Kostar Fyndaren något?<svg class="chev h-5 w-5 flex-none transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+        <div id="f1" class="hidden px-5 pb-4 text-sm">Nej, appen är gratis. Fyndaren kan få provision när du handlar via en butikslänk, men det påverkar aldrig priset du betalar.</div>
+      </div>
+      <div>
+        <h3><button class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-white" aria-expanded="false" aria-controls="f2">Behöver jag skapa ett konto?<svg class="chev h-5 w-5 flex-none transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+        <div id="f2" class="hidden px-5 pb-4 text-sm">Inte för att titta på erbjudanden. Ett konto behövs bara om du vill spara fynd i din sparlista och ha den på flera enheter.</div>
+      </div>
+      <div>
+        <h3><button class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-white" aria-expanded="false" aria-controls="f3">Hur installerar jag appen?<svg class="chev h-5 w-5 flex-none transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+        <div id="f3" class="hidden px-5 pb-4 text-sm">På Android i Chrome: tryck på menyn (⋮) och välj “Installera app”. På iPhone i Safari: tryck på Dela och välj “Lägg till på hemskärmen”.</div>
+      </div>
+      <div>
+        <h3><button class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-white" aria-expanded="false" aria-controls="f4">Är alla erbjudanden riktiga?<svg class="chev h-5 w-5 flex-none transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+        <div id="f4" class="hidden px-5 pb-4 text-sm">Fyndaren är under uppbyggnad, och tills riktiga erbjudanden är på plats kan en del vara exempel. Det står tydligt i appen. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>
+      </div>
+      <div>
+        <h3><button class="faq-btn flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-white" aria-expanded="false" aria-controls="f5">Hur hanteras mina uppgifter?<svg class="chev h-5 w-5 flex-none transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button></h3>
+        <div id="f5" class="hidden px-5 pb-4 text-sm">Vi sparar bara det som behövs för ditt konto och din sparlista. Läs mer i <a class="text-emerald-300 underline" href="integritetspolicy.html">integritetspolicyn</a>.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-function render(){
-  $('#main').innerHTML={offers,compare,codes,list}[tab]();
-  $('#cnt').textContent=favs.size;
-  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
-}
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
+<!-- ===== AVSLUTANDE CTA ===== -->
+<section class="mx-auto max-w-6xl px-5 py-16">
+  <div class="rounded-3xl border border-emerald-400/40 bg-gradient-to-br from-emerald-900 to-ink px-6 py-12 text-center">
+    <h2 class="text-3xl font-extrabold text-white">Redo att hitta veckans fynd?</h2>
+    <p class="mx-auto mt-3 max-w-xl text-emerald-100">Öppna Fyndaren och börja spara redan i dag.</p>
+    <a href="app.html" class="mt-7 inline-block rounded-xl bg-white px-8 py-3.5 font-semibold text-emerald-800 transition hover:bg-emerald-50">Öppna appen</a>
+  </div>
+</section>
+</main>
 
-function openAuth(note){
-  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Fyndaren</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
-  setTimeout(()=>{const e=$('#em');if(e)e.focus()},50);
-}
-function closeAuth(){$('#modal').innerHTML=''}
-const setMsg=m=>{const e=$('#msg');if(e)e.textContent=m};
+<!-- ===== FOOTER: länkar, kontakt, veckobrev och copyright ===== -->
+<footer class="border-t border-white/10 bg-surface">
+  <div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 md:grid-cols-3">
+    <div>
+      <p class="flex items-center gap-3 text-lg font-extrabold text-white"><img src="icon-192.png" alt="" width="36" height="36" class="h-9 w-9 rounded-lg"> Fyndaren</p>
+      <p class="mt-3 text-sm">Smarta priser och veckans bästa kap från svenska butiker.</p>
+    </div>
+    <div>
+      <h2 class="font-semibold text-white">Länkar</h2>
+      <ul class="mt-3 space-y-2 text-sm">
+        <li><a class="hover:text-emerald-300" href="app.html">Öppna appen</a></li>
+        <li><a class="hover:text-emerald-300" href="om-oss.html">Om Fyndaren</a></li>
+        <li><a class="hover:text-emerald-300" href="integritetspolicy.html">Integritetspolicy</a></li>
+        <li><a class="hover:text-emerald-300" href="mailto:hej@fyndaren.se">hej@fyndaren.se</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-semibold text-white">Veckobrev</h2>
+      <p class="mt-3 text-sm">Anmäl dig, så skickar vi en länk till veckans bästa fynd.</p>
+      <form id="nlForm" class="mt-3 flex flex-col gap-2 sm:flex-row" novalidate>
+        <label for="nlEmail" class="sr-only">Din e-postadress</label>
+        <input id="nlEmail" type="email" autocomplete="email" placeholder="din@epost.se" class="min-w-0 flex-1 rounded-xl border border-white/15 bg-ink px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/30">
+        <button type="submit" class="rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300">Anmäl mig</button>
+      </form>
+      <p id="nlMsg" role="alert" class="mt-2 min-h-[1.25rem] text-sm"></p>
+    </div>
+  </div>
+  <div class="border-t border-white/10 px-5 py-5 text-center text-xs text-slate-400">© <span id="yr">2026</span> Fyndaren. Drivs av Gino El Maalouf.</div>
+</footer>
 
-async function doAuth(mode){
-  if(!sb)return setMsg('Appen kunde inte starta. Ladda om sidan.');
-  const email=$('#em').value.trim(),pw=$('#pw').value;
-  if(!email||pw.length<6)return setMsg('Fyll i e-post och ett lösenord på minst 6 tecken.');
-  setMsg('Vänta…');
-  if(mode==='up'){
-    const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.href.split('#')[0]}});
-    if(error)return setMsg(error.message);
-    if(data.session){closeAuth();toast('Kontot är skapat')}
-    else setMsg('Vi har skickat ett bekräftelsemail. Öppna länken i mejlet och logga sedan in.');
-  }else{
-    const {error}=await sb.auth.signInWithPassword({email,password:pw});
-    if(error){
-      const m=error.message||'';
-      return setMsg(m.includes('Invalid login')?'Fel e-post eller lösenord.':m.includes('not confirmed')?'Bekräfta din e-post först. Kolla din inkorg.':m);
-    }
-    closeAuth();toast('Du är inloggad');
-  }
-}
-
-async function toggleFav(id){
-  if(!user){openAuth('Logga in för att spara erbjudanden i din sparlista.');return}
-  const had=favs.has(id);
-  had?favs.delete(id):favs.add(id);render();
-  const r=had?await sb.from('favorites').delete().eq('deal_id',id).eq('user_id',user.id):await sb.from('favorites').insert({deal_id:id});
-  if(r.error){had?favs.add(id):favs.delete(id);render();toast('Det gick inte att spara. Försök igen.')}
-  else toast(had?'Borttagen från sparlistan':'Sparad i sparlistan');
-}
-
-document.addEventListener('click',e=>{
-  if(e.target.matches('[data-close]')){closeAuth();return}
-  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
-  if(d.tab){tab=d.tab;render();scrollTo(0,0)}
-  else if(d.fav){toggleFav(+d.fav)}
-  else if(d.cat){cat=d.cat;render()}
-  else if(d.hero){cat=HERO[+d.hero].cat;render();$('.chips').scrollIntoView({behavior:'smooth'})}
-  else if(d.mem!==undefined){hideMem=!hideMem;render()}
-  else if(d.cmp){cmp=d.cmp;render()}
-  else if(d.retry!==undefined){loadDeals()}
-  else if(d.login!==undefined){openAuth()}
-  else if(d.logout!==undefined){sb.auth.signOut().then(()=>toast('Du är utloggad'))}
-  else if(d.auth){doAuth(d.auth)}
-  else if(d.copy){const c=d.copy;try{navigator.clipboard.writeText(c).then(()=>toast('Koden '+c+' är kopierad'),()=>toast('Din kod: '+c))}catch(x){toast('Din kod: '+c)}}
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeAuth();
-  if(e.key==='Enter'&&e.target.closest('.sheet'))doAuth('in');
-});
-$('#q').addEventListener('input',e=>{q=e.target.value;if(tab!=='offers')tab='offers';render()});
-
-if(sb){
-  sb.auth.onAuthStateChange((ev,session)=>{
-    user=session?session.user:null;
-    setTimeout(loadFavs,0);
+<script>
+  // 1) Mobilmeny: öppna/stäng och uppdatera aria-expanded
+  const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const open = menu.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Stäng menyn' : 'Öppna menyn');
   });
-}
-loadDeals();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { menu.classList.add('hidden'); menuBtn.setAttribute('aria-expanded', 'false'); }));
+
+  // 2) FAQ-dragspel: en fråga öppen i taget
+  const btns = document.querySelectorAll('.faq-btn');
+  btns.forEach(b => b.addEventListener('click', () => {
+    const wasOpen = b.getAttribute('aria-expanded') === 'true';
+    btns.forEach(o => {
+      o.setAttribute('aria-expanded', 'false');
+      document.getElementById(o.getAttribute('aria-controls')).classList.add('hidden');
+      o.querySelector('.chev').classList.remove('rotate-180');
+    });
+    if (!wasOpen) {
+      b.setAttribute('aria-expanded', 'true');
+      document.getElementById(b.getAttribute('aria-controls')).classList.remove('hidden');
+      b.querySelector('.chev').classList.add('rotate-180');
+    }
+  }));
+
+  // 3) Veckobrev: validerar e-post och öppnar ett färdigt mejl till hej@fyndaren.se
+  const form = document.getElementById('nlForm'), msg = document.getElementById('nlMsg'), input = document.getElementById('nlEmail');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = input.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      msg.className = 'mt-2 min-h-[1.25rem] text-sm text-amber-300';
+      msg.textContent = 'Skriv en giltig e-postadress, till exempel namn@epost.se.';
+      input.focus();
+      return;
+    }
+    msg.className = 'mt-2 min-h-[1.25rem] text-sm text-emerald-300';
+    msg.textContent = 'Din e-postapp öppnas. Skicka mejlet för att anmäla dig.';
+    location.href = 'mailto:hej@fyndaren.se?subject=' + encodeURIComponent('Veckobrev från Fyndaren') +
+      '&body=' + encodeURIComponent('Hej! Jag vill få Fyndarens veckobrev på ' + email + '.');
+  });
+
+  // 4) Aktuellt år i sidfoten
+  document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
