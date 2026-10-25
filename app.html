@@ -206,13 +206,21 @@ body{background:radial-gradient(circle at 100% 60%,rgba(16,185,129,.06),transpar
 nav button:hover svg{transform:translateY(-2px);box-shadow:0 0 15px rgba(212,175,55,.3)}
 .sheet{box-shadow:0 15px 40px rgba(0,0,0,.9),0 0 30px rgba(212,175,55,.25)}
 .chip:hover{box-shadow:0 0 15px rgba(212,175,55,.25)}
+.mark{width:52px;height:52px;border-radius:0;background:none;box-shadow:none;object-fit:contain;filter:drop-shadow(0 0 10px rgba(212,175,55,.5))}
+
+/* ===== Butikslänk och annonsmärkning ===== */
+.go{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.go a,.golink{display:inline-flex;align-items:center;min-height:36px;background:var(--grad);color:#0A0A0C;font-weight:700;font-size:12px;border-radius:8px;padding:6px 12px;text-decoration:none}
+.golink{margin-top:6px}
+.adl{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-style:normal}
+.disc{font-size:12px;color:var(--mute);margin:6px 0 10px}.disc a{color:var(--gink)}
 </style>
 </head>
 <body>
 <div class="ticker" id="ticker" hidden role="region" aria-label="Heta och nya erbjudanden"><div class="tk" id="tk"></div></div>
 <header>
   <div class="brand">
-    <img class="mark" src="icon-192.png" alt="" width="46" height="46">
+    <img class="mark" src="icon-192.png" alt="" width="52" height="52">
     <div><h1>Fyndaren</h1><p>Smarta priser & dagens bästa kap</p></div>
     <div class="sp"></div>
     <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
@@ -255,7 +263,9 @@ const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFract
 const pct=o=>Math.round((1-o.p/o.o)*100);
 const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
 const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-const norm=r=>({id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
+const okUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(u||'')?u:'';
+const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få provision om du handlar via dem, utan extra kostnad för dig. <a href="om-oss.html">Läs mer</a></div>';
+const norm=r=>({a:okUrl(r.affiliate_url),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
 
 async function loadDeals(){
   loading=true;err='';render();
@@ -264,7 +274,7 @@ async function loadDeals(){
   loading=false;
   if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
   const cr=await sb.from('codes').select('*').order('id');
-  if(!cr.error)CODES=cr.data.map(r=>({s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
+  if(!cr.error)CODES=cr.data.map(r=>({a:okUrl(r.affiliate_url),s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
   renderTicker();anim=true;render();
 }
 async function loadFavs(){
@@ -274,7 +284,7 @@ async function loadFavs(){
   render();
 }
 
-function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div></div></article>`}
+function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:''}</div></article>`}
 
 function offers(){
   const t=q.trim().toLowerCase();
@@ -284,7 +294,7 @@ function offers(){
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
   else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
   else body=`<div class="grid">${list.map(card).join('')}</div>`;
-  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}${DATA.some(o=>o.a)?DISC:''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
   <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
@@ -302,7 +312,7 @@ function compare(){
 function codes(){
   if(loading)return '<h2>Rabattkoder</h2><div class="empty"><b>Hämtar rabattkoder…</b></div>';
   if(!CODES.length)return '<h2>Rabattkoder</h2><div class="empty"><b>Inga rabattkoder just nu</b>Kom tillbaka snart.</div>';
-  return `<h2>Rabattkoder</h2>${CODES.map(c=>`<div class="row"><div class="logo" style="background:${colr(c.col)}">${esc(c.l)}</div><div class="t"><b>${esc(c.s)}</b><span>${esc(c.d)}</span></div><button class="code" data-copy="${esc(c.code)}" aria-label="Kopiera koden ${esc(c.code)}">${esc(c.code)}</button></div>`).join('')}`}
+  return `<h2>Rabattkoder</h2>${CODES.some(c=>c.a)?DISC:''}${CODES.map(c=>`<div class="row"><div class="logo" style="background:${colr(c.col)}">${esc(c.l)}</div><div class="t"><b>${esc(c.s)}</b><span>${esc(c.d)}</span>${c.a?`<div><a class="golink" href="${esc(c.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a> <span class="adl">Annonslänk</span></div>`:''}</div><button class="code" data-copy="${esc(c.code)}" aria-label="Kopiera koden ${esc(c.code)}">${esc(c.code)}</button></div>`).join('')}`}
 
 function list(){
   const items=DATA.filter(o=>favs.has(o.id));
