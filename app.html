@@ -214,6 +214,15 @@ nav button:hover svg{transform:translateY(-2px);box-shadow:0 0 15px rgba(212,175
 .golink{margin-top:6px}
 .adl{font-size:11px;color:var(--mute);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-style:normal}
 .disc{font-size:12px;color:var(--mute);margin:6px 0 10px}.disc a{color:var(--gink)}
+
+/* ===== Hela kortet är en länk, villkor och kontrollerad ===== */
+.card:has(.go){cursor:pointer}
+.go a::after{content:"";position:absolute;inset:0;z-index:1;border-radius:16px}
+.go a:focus-visible::after{outline:2px solid var(--gink);outline-offset:-2px}
+.card .fav{z-index:3}
+.go a.pl{background:none;border:1px solid rgba(212,175,55,.5);color:var(--gink)}
+.cond{font-size:12px;font-weight:600;color:var(--gink);margin-top:6px}
+.chk{font-size:11px;color:var(--mute);margin-top:2px}
 </style>
 </head>
 <body>
@@ -265,14 +274,17 @@ const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke=
 const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(u||'')?u:'';
 const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få provision om du handlar via dem, utan extra kostnad för dig. <a href="om-oss.html">Läs mer</a></div>';
-const norm=r=>({a:okUrl(r.affiliate_url),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:r.valid_until,g:r.compare_group});
+const iso=d=>d&&/^\d{4}-\d{2}-\d{2}/.test(d)?String(d).slice(0,10):'';
+const dm=d=>iso(d)?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
+const todayISO=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
+const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),cond:r.conditions||'',k:iso(r.checked_on),vt:iso(r.valid_to),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:iso(r.valid_to)?dm(r.valid_to):r.valid_until,g:r.compare_group});
 
 async function loadDeals(){
   loading=true;err='';render();
   if(!sb){loading=false;err='Appen kunde inte starta. Ladda om sidan.';render();return}
   const {data,error}=await sb.from('deals').select('*').order('id');
   loading=false;
-  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm)}
+  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm).filter(o=>!o.vt||o.vt>=todayISO())}
   const cr=await sb.from('codes').select('*').order('id');
   if(!cr.error)CODES=cr.data.map(r=>({a:okUrl(r.affiliate_url),s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
   renderTicker();anim=true;render();
@@ -284,7 +296,7 @@ async function loadFavs(){
   render();
 }
 
-function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:''}</div></article>`}
+function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
 
 function offers(){
   const t=q.trim().toLowerCase();

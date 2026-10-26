@@ -47,6 +47,7 @@ const SUPABASE_KEY='sb_publishable_ep-vKQBf3tjvDC2h03BlYQ_hwUqrvY5';
 let sb=null;try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
 let user=null,isAdmin=false,DATA=[],CODES=[],view='deals',editId=null,filter='';
 const $=s=>document.querySelector(s);
+const todayISO=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const colr=c=>/^#[0-9a-f]{6}$/i.test(c||'')?c:'#64748b';
 const num=s=>{const n=parseFloat(String(s).replace(',','.'));return isNaN(n)?null:n};
@@ -72,6 +73,10 @@ function formHTML(d){
   <div class="two"><div><label for="f_utext">Unit price text (optional)</label><input id="f_utext" value="${esc(d.unit_text)}" placeholder="87,78 kr/kg"></div><div><label for="f_uprice">Unit price number</label><input id="f_uprice" inputmode="decimal" value="${esc(d.unit_price)}" placeholder="87.78"></div></div>
   <label for="f_group">Compare group (optional, same name = compared together)</label><input id="f_group" value="${esc(d.compare_group)}" placeholder="Kyckling">
   <label for="f_aff">Shop link (optional, the affiliate link, must start with https://)</label><input id="f_aff" type="url" value="${esc(d.affiliate_url)}" placeholder="https://…">
+  <label for="f_url">Store offer page (optional, a normal link, must start with https://)</label><input id="f_url" type="url" value="${esc(d.shop_url)}" placeholder="https://…">
+  <div class="two"><div><label for="f_vt">Valid to (date; the deal hides itself after this day)</label><input id="f_vt" type="date" value="${esc(d.valid_to)}"></div><div><label for="f_chk">Last checked (date)</label><input id="f_chk" type="date" value="${esc(d.checked_on)}"></div></div>
+  <button class="btn ghost sm" type="button" data-today style="margin-top:8px">Set last checked to today</button>
+  <label for="f_cond">Conditions (optional, for example Buy 2 online)</label><input id="f_cond" value="${esc(d.conditions)}">
   <div class="two"><div><label for="f_logo">Logo letters (optional)</label><input id="f_logo" maxlength="4" value="${esc(d.logo)}"></div><div><label for="f_color">Logo colour</label><input id="f_color" type="color" value="${colr(d.color)==='#64748b'&&!d.color?'#10b981':colr(d.color)}"></div></div>
   <div class="msg" id="msg" role="alert"></div>
   <button class="btn" data-save>${editId?'Save changes':'Add deal'}</button>
@@ -86,7 +91,7 @@ function renderList(){
   const t=filter.trim().toLowerCase();
   const items=DATA.filter(d=>!t||(d.store+' '+d.name+' '+d.category).toLowerCase().includes(t));
   $('#count').textContent=items.length;
-  $('#list').innerHTML=items.length?items.map(d=>`<div class="item"><div class="dot" style="background:${colr(d.color)}">${esc(d.logo)}</div><div class="t"><b>${esc(d.store)}: ${esc(d.name)}</b><span>${kr(d.price)} (was ${kr(d.old_price)}) · until ${esc(d.valid_until)}${d.affiliate_url?' · has shop link':''}</span></div><div class="acts"><button class="btn ghost sm" data-edit="${d.id}">Edit</button><button class="btn red sm" data-del="${d.id}">Delete</button></div></div>`).join(''):'<p>No deals found.</p>';
+  $('#list').innerHTML=items.length?items.map(d=>`<div class="item"><div class="dot" style="background:${colr(d.color)}">${esc(d.logo)}</div><div class="t"><b>${esc(d.store)}: ${esc(d.name)}</b><span>${kr(d.price)} (was ${kr(d.old_price)}) · until ${esc(d.valid_until)}${d.affiliate_url?' · has affiliate link':''}${d.shop_url?' · has page link':''}${d.valid_to&&d.valid_to<todayISO()?' · EXPIRED (hidden in the app)':''}</span></div><div class="acts"><button class="btn ghost sm" data-edit="${d.id}">Edit</button><button class="btn red sm" data-del="${d.id}">Delete</button></div></div>`).join(''):'<p>No deals found.</p>';
 }
 async function loadDeals(){
   const {data,error}=await sb.from('deals').select('*').order('id',{ascending:false});
@@ -143,7 +148,9 @@ async function doLogin(){
   if(error)setMsg(error.message.includes('Invalid login')?'Wrong email or password.':error.message);
 }
 function collect(){
-  const store=v('f_store').trim(),name=v('f_name').trim(),until=v('f_until').trim();
+  const store=v('f_store').trim(),name=v('f_name').trim();
+  let until=v('f_until').trim();const vt=v('f_vt');
+  if(!until&&vt)until=(+vt.slice(8,10))+'/'+(+vt.slice(5,7));
   const price=num(v('f_price')),old=num(v('f_old'));
   if(!store||!name||!until)return {err:'Store, product and valid until are required.'};
   if(!price||price<=0||!old)return {err:'Enter a deal price and an original price.'};
@@ -152,7 +159,10 @@ function collect(){
   const logo=v('f_logo').trim()||(w.length>1?w.map(x=>x[0]).join('').slice(0,3).toUpperCase():store.slice(0,3));
   const aff=v('f_aff').trim();
   if(aff&&!/^https:\/\/\S+$/i.test(aff))return {err:'The shop link must start with https:// (use the link from your affiliate network).'};
-  return {p:{store,logo,color:v('f_color'),category:v('f_cat'),name,price,old_price:old,unit_text:v('f_utext').trim()||null,unit_price:num(v('f_uprice')),membership:v('f_mem').trim()||null,affiliate_url:aff||null,valid_until:until,compare_group:v('f_group').trim()||null}};
+  const url=v('f_url').trim();
+  if(url&&!/^https:\/\/\S+$/i.test(url))return {err:'The offer page link must start with https://'};
+  const cond=v('f_cond').trim(),chk=v('f_chk');
+  return {p:{store,logo,color:v('f_color'),category:v('f_cat'),name,price,old_price:old,unit_text:v('f_utext').trim()||null,unit_price:num(v('f_uprice')),membership:v('f_mem').trim()||null,affiliate_url:aff||null,shop_url:url||null,valid_to:vt||null,checked_on:chk||null,conditions:cond||null,valid_until:until,compare_group:v('f_group').trim()||null}};
 }
 async function save(){
   const r=collect();if(r.err)return setMsg(r.err);
@@ -178,6 +188,7 @@ document.addEventListener('click',e=>{
   else if(d.cancel!==undefined){editId=null;adminView()}
   else if(d.edit){editId=+d.edit;adminView();scrollTo(0,0)}
   else if(d.del){del(+d.del)}
+  else if(d.today!==undefined){$('#f_chk').value=todayISO()}
   else if(d.view){view=d.view;editId=null;adminView()}
   else if(d.csave!==undefined)saveCode()
   else if(d.cdel){delCode(+d.cdel)}
