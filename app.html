@@ -250,7 +250,7 @@ const HERO=[
 {t:'3 för 2 på hudvård',s:'Apotek Hjärtat',cat:'Apotek',bg:'linear-gradient(135deg,#3a1f12,#8a5a2b)'},
 {t:'Höstrea upp till 50 %',s:'Zalando och Stadium',cat:'Kläder',bg:'linear-gradient(135deg,#3b2f0a,#8f7222)'}
 ];
-const DEMO=true; // sätt till false när riktiga erbjudanden är inlagda
+const DEMO=false; // true visar rutan 'under uppbyggnad / exempel'
 let CODES=[];
 const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
 const ICONS={Mat:'🛒',Elektronik:'📱',Apotek:'💊',Kläder:'👕'};
@@ -294,7 +294,7 @@ function offers(){
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
   else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
   else body=`<div class="grid">${list.map(card).join('')}</div>`;
-  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':''}${DATA.some(o=>o.a)?DISC:''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
   <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
