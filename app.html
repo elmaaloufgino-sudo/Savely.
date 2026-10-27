@@ -393,6 +393,34 @@ nav button[aria-current="page"] svg{filter:drop-shadow(0 0 5px rgba(230,202,101,
 }
 @media(prefers-reduced-motion:reduce){.card .go a{transition:none!important}}
 
+
+/* ===== Startsida: mer sammanhållen kampanjyta och kategorier ===== */
+.disc{font-size:12px;line-height:1.5;color:var(--mute);margin:0 0 14px}
+.stats{position:relative;overflow:hidden;min-height:86px}
+.stats::after{content:"";position:absolute;right:-28px;top:-44px;width:130px;height:130px;border:1px solid rgba(230,202,101,.12);border-radius:50%;pointer-events:none}
+.stats .si{border:1px solid rgba(230,202,101,.2);box-shadow:inset 0 0 20px rgba(212,175,55,.06)}
+.hero{gap:14px;padding-bottom:8px;scroll-padding-inline:16px}
+.hc{position:relative;isolation:isolate;overflow:hidden;min-height:148px;padding:18px;border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025);transition:border-color .2s,transform .2s}
+.hc::after{content:"";position:absolute;z-index:-1;right:-35px;bottom:-70px;width:180px;height:180px;border:1px solid rgba(255,255,255,.15);border-radius:50%;box-shadow:0 0 0 22px rgba(255,255,255,.025),0 0 0 44px rgba(255,255,255,.018);pointer-events:none}
+.hc small{background:rgba(10,10,12,.24);border:1px solid rgba(255,255,255,.14);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.hc b{max-width:92%;font-size:22px;letter-spacing:-.025em;text-wrap:balance}
+.hc span{max-width:90%;line-height:1.4}
+.chips{gap:9px;padding-bottom:7px}
+.chip{min-height:40px;border-color:rgba(230,202,101,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.chip[aria-pressed="true"]{box-shadow:0 5px 16px rgba(212,175,55,.12)}
+.sw{padding:10px 12px;border:1px solid rgba(230,202,101,.1);border-radius:14px;background:rgba(255,255,255,.02)}
+@media(hover:hover){
+  .hc:hover{transform:translateY(-2px);border-color:rgba(230,202,101,.55)}
+}
+@media(max-width:380px){
+  .hero{gap:10px}
+  .hc{flex-basis:86%;min-height:138px;padding:16px;border-radius:18px}
+  .hc b{font-size:20px}
+  .stats{padding:14px}
+  .chip{padding:8px 13px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.hc{transition:none!important}}
+
 </style>
 </head>
 <body>
