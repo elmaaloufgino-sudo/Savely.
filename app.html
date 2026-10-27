@@ -519,6 +519,42 @@ h2 .n{margin-left:auto;flex:none}
   .card .info{gap:4px}
 }
 
+
+/* ===== Finjustering: bredare produktkort och färgkodad bottenmeny ===== */
+@media(max-width:600px){
+  main{padding-left:10px;padding-right:10px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .card .info{padding:10px 9px}
+  .card .tile{height:124px}
+  .card .product-shot{padding:10px 6px 20px}
+  .card h3{font-size:13px;line-height:1.3;min-height:0}
+  .card .price b{font-size:19px}
+  .card .store{font-size:10px}
+}
+@media(max-width:380px){
+  main{padding-left:8px;padding-right:8px}
+  .grid{gap:7px}
+  .card .info{padding:9px 8px}
+  .card .tile{height:112px}
+}
+/* Färg per funktion: grönt för fynd, blått för jämförelse, lila för rabattkoder och rosa för sparlistan. */
+nav button:nth-child(1){color:#75D6A0}
+nav button:nth-child(1) svg{color:#75D6A0;background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.34)}
+nav button:nth-child(1)[aria-current="page"]{color:#9AF0BB}
+nav button:nth-child(1)[aria-current="page"] svg{background:rgba(52,211,153,.23);border-color:#75D6A0}
+nav button:nth-child(2){color:#7DB8FF}
+nav button:nth-child(2) svg{color:#7DB8FF;background:rgba(59,130,246,.12);border-color:rgba(96,165,250,.34)}
+nav button:nth-child(2)[aria-current="page"]{color:#A9D0FF}
+nav button:nth-child(2)[aria-current="page"] svg{background:rgba(59,130,246,.23);border-color:#7DB8FF}
+nav button:nth-child(3){color:#C4A0FF}
+nav button:nth-child(3) svg{color:#C4A0FF;background:rgba(168,85,247,.12);border-color:rgba(192,132,252,.34)}
+nav button:nth-child(3)[aria-current="page"]{color:#D9C1FF}
+nav button:nth-child(3)[aria-current="page"] svg{background:rgba(168,85,247,.23);border-color:#C4A0FF}
+nav button:nth-child(4){color:#FF8BA7}
+nav button:nth-child(4) svg{color:#FF8BA7;background:rgba(244,63,94,.12);border-color:rgba(251,113,133,.34)}
+nav button:nth-child(4)[aria-current="page"]{color:#FFB1C2}
+nav button:nth-child(4)[aria-current="page"] svg{background:rgba(244,63,94,.23);border-color:#FF8BA7}
+
 </style>
 </head>
 <body>
