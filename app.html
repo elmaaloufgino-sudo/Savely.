@@ -386,18 +386,35 @@ const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),cond:r.conditions||
 
 async function loadDeals(){
   loading=true;err='';render();
-  if(!sb){loading=false;err='Appen kunde inte starta. Ladda om sidan.';render();return}
-  const {data,error}=await sb.from('deals').select('*').order('id');
+  try{
+    if(!sb)throw new Error('supabase');
+    const {data,error}=await sb.from('deals').select('*').order('id');
+    if(error)throw error;
+    DATA=(Array.isArray(data)?data:[]).map(norm).filter(o=>!o.vt||o.vt>=todayISO());
+  }catch(e){
+    err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.';
+  }
+  try{
+    if(sb){
+      const cr=await sb.from('codes').select('*').order('id');
+      if(!cr.error&&Array.isArray(cr.data))CODES=cr.data.map(r=>({a:okUrl(r.affiliate_url),s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
+    }
+  }catch(e){
+    // Erbjudanden ska fortfarande visas om rabattkodstjänsten inte svarar.
+  }
   loading=false;
-  if(error){err='Kunde inte hämta erbjudanden. Kontrollera din anslutning och försök igen.'}else{DATA=data.map(norm).filter(o=>!o.vt||o.vt>=todayISO())}
-  const cr=await sb.from('codes').select('*').order('id');
-  if(!cr.error)CODES=cr.data.map(r=>({a:okUrl(r.affiliate_url),s:r.store,l:r.logo||String(r.store).slice(0,2),col:r.color,code:r.code,d:(r.description||'')+(r.valid_until?', gäller t.o.m. '+r.valid_until:'')}));
   renderTicker();anim=true;render();
 }
 async function loadFavs(){
   if(!sb||!user){favs=new Set();render();return}
-  const {data,error}=await sb.from('favorites').select('deal_id');
-  if(!error)favs=new Set(data.map(r=>r.deal_id));
+  try{
+    const {data,error}=await sb.from('favorites').select('deal_id');
+    if(error)throw error;
+    favs=new Set((Array.isArray(data)?data:[]).map(r=>r.deal_id));
+  }catch(e){
+    favs=new Set();
+    toast('Kunde inte hämta din sparlista. Försök igen.');
+  }
   render();
 }
 
@@ -494,18 +511,22 @@ async function doAuth(mode){
   const email=$('#em').value.trim(),pw=$('#pw').value;
   if(!email||pw.length<6)return setMsg('Fyll i e-post och ett lösenord på minst 6 tecken.');
   setMsg('Vänta…');
-  if(mode==='up'){
-    const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.href.split('#')[0]}});
-    if(error)return setMsg(error.message);
-    if(data.session){closeAuth();toast('Kontot är skapat')}
-    else setMsg('Vi har skickat ett bekräftelsemail. Öppna länken i mejlet och logga sedan in.');
-  }else{
-    const {error}=await sb.auth.signInWithPassword({email,password:pw});
-    if(error){
-      const m=error.message||'';
-      return setMsg(m.includes('Invalid login')?'Fel e-post eller lösenord.':m.includes('not confirmed')?'Bekräfta din e-post först. Kolla din inkorg.':m);
+  try{
+    if(mode==='up'){
+      const {data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.href.split('#')[0]}});
+      if(error)return setMsg(error.message);
+      if(data.session){closeAuth();toast('Kontot är skapat')}
+      else setMsg('Vi har skickat ett bekräftelsemail. Öppna länken i mejlet och logga sedan in.');
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password:pw});
+      if(error){
+        const m=error.message||'';
+        return setMsg(m.includes('Invalid login')?'Fel e-post eller lösenord.':m.includes('not confirmed')?'Bekräfta din e-post först. Kolla din inkorg.':m);
+      }
+      closeAuth();toast('Du är inloggad');
     }
-    closeAuth();toast('Du är inloggad');
+  }catch(e){
+    setMsg('Det gick inte att ansluta just nu. Kontrollera din anslutning och försök igen.');
   }
 }
 
