@@ -441,6 +441,31 @@ nav button[aria-current="page"] svg{filter:drop-shadow(0 0 5px rgba(230,202,101,
   .empty b{font-size:16px}
 }
 
+
+/* ===== Header och sidfot: lugnare inramning ===== */
+header{padding-top:max(16px,env(safe-area-inset-top));padding-bottom:16px;border-bottom:1px solid rgba(230,202,101,.12)}
+.brand{gap:13px}
+.brand .mark{filter:drop-shadow(0 5px 12px rgba(212,175,55,.12))}
+.brand h1{letter-spacing:-.035em}
+.brand p{max-width:220px;line-height:1.45;color:var(--mute)}
+.search{gap:12px}
+.search:focus-within{border-color:rgba(230,202,101,.62);box-shadow:0 0 0 3px rgba(230,202,101,.09)}
+.search input::placeholder{color:rgba(255,255,255,.48)}
+footer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:18px 20px calc(28px + env(safe-area-inset-bottom));line-height:1.5}
+footer a{text-decoration:none;text-underline-offset:3px}
+footer a:hover{text-decoration:underline}
+@media(min-width:768px){
+  header{padding-top:22px;padding-bottom:20px}
+  .brand p{max-width:none}
+}
+@media(max-width:380px){
+  .brand{gap:9px}
+  .brand .mark{width:44px;height:44px}
+  .brand p{font-size:11px;max-width:175px}
+  .search{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.search{transition:none!important}}
+
 </style>
 </head>
 <body>
