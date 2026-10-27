@@ -403,14 +403,14 @@ async function loadFavs(){
 
 function storeLogo(o){
   const name=String(o.s||'').toLowerCase();
-  if(name.includes('power')) return '<span class="tl brand-logo power"><img src="https://via.tt.se/data/images/00189/2f03c73b-2031-43ab-a125-855a34a66275.png" alt="POWER" loading="lazy" referrerpolicy="no-referrer"></span>';
+  if(name.includes('power')) return '<span class="tl brand-logo power"><img src="https://via.tt.se/data/images/00189/2f03c73b-2031-43ab-a125-855a34a66275.png" alt="POWER" loading="lazy" decoding="async" referrerpolicy="no-referrer"></span>';
   if(name.includes('apoteket')) return '<span class="tl brand-logo apoteket"><span class="apo-mark" aria-hidden="true">a</span><span>apoteket</span></span>';
   return '<span class="tl">'+esc(o.l)+'</span>';
 }
 
 function productVisual(o){
   if(!o.img)return storeLogo(o);
-  return `<img class="product-shot" src="${esc(o.img)}" alt="${esc(o.n)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-fallback" style="display:none">${storeLogo(o)}</span>`;
+  return `<img class="product-shot" src="${esc(o.img)}" alt="${esc(o.n)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-fallback" style="display:none">${storeLogo(o)}</span>`;
 }
 
 function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button>${productVisual(o)}<span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
@@ -502,13 +502,17 @@ async function doAuth(mode){
   }
 }
 
+const favPending=new Set();
 async function toggleFav(id){
   if(!user){openAuth('Logga in för att spara erbjudanden i din sparlista.');return}
+  if(favPending.has(id))return;
+  favPending.add(id);
   const had=favs.has(id);
   had?favs.delete(id):favs.add(id);popId=had?null:id;render();popId=null;
   const r=had?await sb.from('favorites').delete().eq('deal_id',id).eq('user_id',user.id):await sb.from('favorites').insert({deal_id:id});
-  if(r.error){had?favs.add(id):favs.delete(id);render();toast('Det gick inte att spara. Försök igen.')}
-  else toast(had?'Borttagen från sparlistan':'Sparad i sparlistan');
+  favPending.delete(id);
+  if(r.error){had?favs.add(id):favs.delete(id);render();toast('Det gick inte att uppdatera sparlistan. Försök igen.')}
+  else{render();toast(had?'Borttagen från sparlistan':'Sparad i sparlistan')}
 }
 
 document.addEventListener('click',e=>{
