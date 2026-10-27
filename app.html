@@ -475,6 +475,10 @@ function list(){
   if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
   return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
 
+function scrollToTarget(el){
+  if(!el)return;
+  el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}
 function renderTicker(){
   const t=$('#ticker'),tk=$('#tk');
   if(!DATA.length){t.hidden=true;return}
@@ -559,10 +563,10 @@ document.addEventListener('click',e=>{
   if(e.target.matches('[data-close]')){closeAuth();return}
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.tab){tab=d.tab;anim=true;render();scrollTo(0,0)}
-  else if(d.tick){const o=DATA.find(x=>x.id===+d.tick);if(o){q=o.n;$('#q').value=o.n;cat='Alla';tab='offers';anim=true;render();(document.querySelector('.grid')||document.body).scrollIntoView({behavior:'smooth'})}}
+  else if(d.tick){const o=DATA.find(x=>x.id===+d.tick);if(o){q=o.n;$('#q').value=o.n;cat='Alla';tab='offers';anim=true;render();(document.querySelector('.grid')||document.body).scrollToTarget(document.querySelector('.grid')||document.body)}}
   else if(d.fav){toggleFav(+d.fav)}
   else if(d.cat){cat=d.cat;anim=true;render()}
-  else if(d.hero){cat=HERO[+d.hero].cat;anim=true;render();$('.chips').scrollIntoView({behavior:'smooth'})}
+  else if(d.hero){cat=HERO[+d.hero].cat;anim=true;render();scrollToTarget($('.chips'))}
   else if(d.mem!==undefined){hideMem=!hideMem;anim=true;render()}
   else if(d.cmp){cmp=d.cmp;anim=true;render()}
   else if(d.retry!==undefined){loadDeals()}
