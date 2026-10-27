@@ -341,17 +341,17 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.14)}
     <img class="mark" src="icon-192.png" alt="" width="52" height="52">
     <div><h1>Fyndaren</h1><p>Smarta priser & dagens bästa kap</p></div>
     <div class="sp"></div>
-    <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
+    <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
   </div>
-  <label class="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
+  <label class="search"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
 </header>
 <main id="main"></main>
 <footer><a href="integritetspolicy.html">Integritetspolicy</a> · <a href="om-oss.html">Om Fyndaren</a> · hej@fyndaren.se</footer>
 <nav aria-label="Huvudmeny">
-  <button data-tab="offers"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
-  <button data-tab="compare"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
-  <button data-tab="codes"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Rabattkoder</button>
-  <button data-tab="list"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista<i class="nb" id="navCnt" hidden>0</i></button>
+  <button data-tab="offers"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Erbjudanden</button>
+  <button data-tab="compare"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l2 2 3-3M4 14l2 2 3-3M13 7h8M13 15h8"/></svg>Jämför</button>
+  <button data-tab="codes"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></svg>Rabattkoder</button>
+  <button data-tab="list"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista<i class="nb" id="navCnt" hidden>0</i></button>
 </nav>
 <div id="modal"></div>
 <div class="toast" id="toast" role="status"></div>
@@ -379,7 +379,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;'
 const colr=c=>/^#[0-9a-f]{3,8}$/i.test(c||'')?c:'#64748b';
 const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+' kr';
 const pct=o=>Math.round((1-o.p/o.o)*100);
-const heart='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
+const heart='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
 const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(u||'')?u:'';
 const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få provision om du handlar via dem, utan extra kostnad för dig. <a href="om-oss.html">Läs mer</a></div>';
