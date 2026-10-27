@@ -367,6 +367,32 @@ nav button[aria-current="page"] svg{filter:drop-shadow(0 0 5px rgba(230,202,101,
 }
 @media(prefers-reduced-motion:reduce){nav button,nav button svg{transition:none!important}}
 
+
+/* ===== Produktkort: tydligare pris och butiks-knapp ===== */
+.card .tile{border:1px solid rgba(230,202,101,.12);border-radius:14px;overflow:hidden}
+.card .ptag{font-weight:800;letter-spacing:-.02em;box-shadow:0 4px 16px rgba(0,0,0,.22)}
+.card .badge{box-shadow:0 3px 12px rgba(0,0,0,.18)}
+.card .price{gap:8px;row-gap:3px}
+.card .price s{color:rgba(255,255,255,.48)}
+.card .sv{display:inline-flex;align-items:center;color:#E6CA65;font-weight:700}
+.card .go{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.card .go a{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:9px 13px;border:1px solid rgba(230,202,101,.38);background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(230,202,101,.07));color:#F4D979;font-size:13px;font-weight:800;line-height:1.2;text-decoration:none;transition:background .2s,border-color .2s,transform .2s}
+.card .go a.pl{background:rgba(255,255,255,.035);border-color:var(--line);color:var(--ink)}
+.card .adl{font-size:11px;color:var(--mute)}
+.card .exp,.card .chk{font-size:11px;color:var(--mute);line-height:1.45}
+.card .cond{margin-top:5px;font-size:12px;line-height:1.4;color:#ddd}
+.card .mem{font-size:11px}
+@media(hover:hover){
+  .card .go a:hover{background:rgba(212,175,55,.22);border-color:rgba(230,202,101,.65);transform:translateY(-1px)}
+  .card .go a.pl:hover{background:rgba(255,255,255,.07)}
+}
+@media(max-width:380px){
+  .card .go{align-items:stretch}
+  .card .go a{min-height:38px;padding:8px 10px;font-size:12px}
+  .card .go .adl{align-self:center}
+}
+@media(prefers-reduced-motion:reduce){.card .go a{transition:none!important}}
+
 </style>
 </head>
 <body>
