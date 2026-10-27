@@ -332,6 +332,41 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.14)}
   .card .adl{font-size:10px}
 }
 
+
+/* ===== Visuell finputs: tydligare hierarki och lugnare gulddetaljer ===== */
+:root{--line:rgba(230,202,101,.14);--chip:rgba(255,255,255,.035)}
+main{padding-top:20px}
+h2{letter-spacing:.01em}
+h2::after{content:"";align-self:stretch;width:3px;order:-1;background:var(--grad);border-radius:3px;margin-right:2px}
+header{box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.brand p{font-size:12px;letter-spacing:.015em}
+.search{min-height:50px}
+.search input{height:48px}
+.chip{padding:9px 15px;font-size:14px}
+.card,.row{border-color:rgba(230,202,101,.12);border-radius:18px}
+.card{padding:12px;gap:12px}
+.card .logo{border-radius:15px}
+.card .price b{letter-spacing:-.025em}
+.card .exp{line-height:1.4}
+.card .fav{width:36px;height:36px}
+.card .go a{border-radius:11px}
+nav{background:rgba(10,10,12,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top-color:rgba(230,202,101,.16);padding-top:10px}
+nav button{position:relative;border-radius:13px;min-height:54px;transition:color .2s,background .2s}
+nav button svg{transition:transform .2s}
+nav button[aria-current="page"]{background:linear-gradient(180deg,rgba(212,175,55,.12),rgba(212,175,55,.035))}
+nav button[aria-current="page"]::before{content:"";position:absolute;top:-10px;left:30%;right:30%;height:2px;border-radius:2px;background:var(--grad)}
+nav button[aria-current="page"] svg{filter:drop-shadow(0 0 5px rgba(230,202,101,.2))}
+.sum{border:1px solid rgba(230,202,101,.2);background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(255,255,255,.025))}
+.empty{padding-top:44px;padding-bottom:44px}
+.toast{border:1px solid rgba(230,202,101,.22);box-shadow:0 12px 35px rgba(0,0,0,.3)}
+@media(hover:hover){nav button:hover{background:rgba(255,255,255,.035)}}
+@media(max-width:380px){
+  main{padding-top:16px}
+  .card{padding:10px;gap:9px}
+  nav button{min-height:50px}
+}
+@media(prefers-reduced-motion:reduce){nav button,nav button svg{transition:none!important}}
+
 </style>
 </head>
 <body>
