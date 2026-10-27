@@ -308,6 +308,26 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.14)}
   nav button{font-size:11px}
 }
 
+
+/* ===== Förfining: långa produktnamn, tomma sökresultat och små skärmar ===== */
+.card .store,.card h3,.card .cond,.card .chk,.card .mute{overflow-wrap:anywhere;word-break:normal}
+.card .info{min-width:0}
+.card .go a{max-width:100%;overflow-wrap:anywhere}
+.empty-actions{display:flex;flex-direction:column;gap:8px;max-width:260px;margin:14px auto 0}
+.empty-actions .btn{margin-top:0}
+.btn.ghost{background:rgba(255,255,255,.03)}
+@media(max-width:380px){
+  .grid{gap:9px}
+  .card .info{padding:9px}
+  .card .store{font-size:10px;letter-spacing:.25px}
+  .card h3{font-size:13px;line-height:1.3}
+  .card .price{gap:5px}
+  .card .sv{font-size:10px}
+  .card .go{gap:5px}
+  .card .go a{font-size:12px;padding:8px 9px}
+  .card .adl{font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -395,18 +415,21 @@ function productVisual(o){
 
 function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button>${productVisual(o)}<span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
 
+function searchKey(value){
+  return String(value==null?'':value).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('sv-SE').replace(/[^\\p{L}\\p{N}]+/gu,' ').trim();
+}
 function offers(){
-  const t=q.trim().toLowerCase();
-  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.s+' '+o.n+' '+o.c).toLowerCase().includes(t)));
+  const t=searchKey(q);
+  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||searchKey([o.s,o.n,o.c,o.u,o.cond].join(' ')).includes(t)));
   let body;
   if(loading)body='<div class="grid" aria-busy="true" aria-label="Hämtar erbjudanden">'+'<div class="card skel"></div>'.repeat(4)+'</div>';
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
-  else if(!list.length)body='<div class="empty"><b>Inga träffar</b>Prova ett annat sökord eller en annan kategori.</div>';
+  else if(!list.length)body=`<div class="empty"><b>Inga träffar</b>${t?'Vi hittade inga erbjudanden som matchar din sökning.':'Det finns inga erbjudanden i den här vyn just nu.'}<div class="empty-actions">${t?'<button class="btn" data-clear-search>Rensa sökning</button>':''}${cat!=='Alla'?'<button class="btn ghost" data-reset-filters>Visa alla kategorier</button>':''}${hideMem?'<button class="btn ghost" data-show-membership>Visa även medlemspriser</button>':''}</div></div>`;
   else body=`<div class="grid">${list.map(card).join('')}</div>`;
   return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
-  <h2>Erbjudanden<span class="n">${loading||err?'':list.length+' st'}</span></h2>${body}`}
+  <h2>Erbjudanden<span class="n" aria-live="polite">${loading||err?'':list.length+' st'}</span></h2>${body}`}
 
 function compare(){
   const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
@@ -499,6 +522,9 @@ document.addEventListener('click',e=>{
   else if(d.mem!==undefined){hideMem=!hideMem;anim=true;render()}
   else if(d.cmp){cmp=d.cmp;anim=true;render()}
   else if(d.retry!==undefined){loadDeals()}
+  else if(d.clearSearch!==undefined){q='';$('#q').value='';anim=true;render();$('#q').focus()}
+  else if(d.resetFilters!==undefined){cat='Alla';anim=true;render()}
+  else if(d.showMembership!==undefined){hideMem=false;anim=true;render()}
   else if(d.login!==undefined){openAuth()}
   else if(d.logout!==undefined){sb.auth.signOut().then(()=>toast('Du är utloggad'))}
   else if(d.auth){doAuth(d.auth)}
