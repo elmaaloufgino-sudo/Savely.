@@ -421,6 +421,26 @@ nav button[aria-current="page"] svg{filter:drop-shadow(0 0 5px rgba(230,202,101,
 }
 @media(prefers-reduced-motion:reduce){.hc{transition:none!important}}
 
+
+/* ===== Dialoger och tomma vyer: mjukare, mer konsekvent yta ===== */
+.modal{background:rgba(4,5,8,.72);padding:16px;align-items:end}
+.modal>div,.modal .panel,.modal .authbox{border:1px solid rgba(230,202,101,.2);box-shadow:0 24px 80px rgba(0,0,0,.48)}
+.empty{position:relative;max-width:520px;margin:0 auto;padding:42px 22px;border:1px solid rgba(230,202,101,.12);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012))}
+.empty b{display:block;color:var(--ink);font-size:18px;line-height:1.3;margin-bottom:8px}
+.empty-actions{margin-top:18px}
+.empty-actions .btn{min-height:42px;border-radius:12px}
+.sum{box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.toast{max-width:min(90%,420px);padding:13px 18px;border-radius:14px;line-height:1.4}
+@media(min-width:600px){
+  .modal{align-items:center}
+  .empty{padding:48px 28px}
+}
+@media(max-width:380px){
+  .modal{padding:10px}
+  .empty{padding:32px 16px;border-radius:17px}
+  .empty b{font-size:16px}
+}
+
 </style>
 </head>
 <body>
