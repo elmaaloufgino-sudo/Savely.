@@ -486,6 +486,18 @@ footer a:hover{text-decoration:underline}
 @media(prefers-reduced-motion:reduce){.card .product-shot{transition:none!important}.card:hover .product-shot{transform:none}}
 
 
+/* ===== Startsida: erbjudanden direkt i fokus ===== */
+.offers-title{margin-top:2px;margin-bottom:8px}
+.offers-title .n{font-size:13px;color:var(--gink)}
+main{padding-top:10px}
+.chips{margin-top:8px}
+.sw{margin-top:8px;margin-bottom:10px}
+@media(max-width:380px){
+  .offers-title{margin-top:0;margin-bottom:6px}
+  .chips{margin-top:6px}
+  .sw{padding:8px 10px;margin-top:6px;margin-bottom:8px}
+}
+
 /* ===== Sektioner och produkttext: jämnare rytm ===== */
 h2{display:flex;align-items:center;gap:10px;margin-top:24px;margin-bottom:13px;line-height:1.2}
 h2 .n{margin-left:auto;flex:none}
@@ -622,10 +634,11 @@ function offers(){
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
   else if(!list.length)body=`<div class="empty"><b>Inga träffar</b>${t?'Vi hittade inga erbjudanden som matchar din sökning.':'Det finns inga erbjudanden i den här vyn just nu.'}<div class="empty-actions">${t?'<button class="btn" data-clear-search>Rensa sökning</button>':''}${cat!=='Alla'?'<button class="btn ghost" data-reset-filters>Visa alla kategorier</button>':''}${hideMem?'<button class="btn ghost" data-show-membership>Visa även medlemspriser</button>':''}</div></div>`;
   else body=`<div class="grid">${list.map(card).join('')}</div>`;
-  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<div class="stats"><div><small>Aktiva erbjudanden</small><b>${loading||err?'–':DATA.length+' st'}</b></div><div class="si" aria-hidden="true">🏷️</div></div><h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<h2 class="offers-title">Aktiva erbjudanden<span class="n" aria-live="polite">${loading||err?'':DATA.length+' st'}</span></h2>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
-  <h2>Erbjudanden<span class="n" aria-live="polite">${loading||err?'':list.length+' st'}</span></h2>${body}`}
+  ${body}
+  <h2>Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>`}
 
 function compare(){
   const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
