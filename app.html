@@ -497,7 +497,7 @@ function render(){
   if(anim){mainEl.querySelectorAll('.card,.row').forEach((c,i)=>c.style.animationDelay=Math.min(i,12)*55+'ms');const sb=mainEl.querySelector('.stats b');if(sb&&DATA.length)countUp(sb,DATA.length)}
   anim=false;
   $('#cnt').textContent=favs.size;const nc=$('#navCnt');nc.textContent=favs.size;nc.hidden=!favs.size;
-  document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+  document.querySelectorAll('nav button').forEach(b=>{if(b.dataset.tab===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
 
