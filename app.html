@@ -382,7 +382,7 @@ const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få 
 const iso=d=>d&&/^\d{4}-\d{2}-\d{2}/.test(d)?String(d).slice(0,10):'';
 const dm=d=>iso(d)?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
 const todayISO=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
-const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),cond:r.conditions||'',k:iso(r.checked_on),vt:iso(r.valid_to),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:iso(r.valid_to)?dm(r.valid_to):r.valid_until,g:r.compare_group,img:r.image_url||null});
+const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),cond:r.conditions||'',k:iso(r.checked_on),vt:iso(r.valid_to),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:iso(r.valid_to)?dm(r.valid_to):r.valid_until,g:r.compare_group,img:r.image_url||null,searchText:searchKey([r.store,r.name,r.category,r.unit_text,r.conditions||''].join(' '))});
 
 async function loadDeals(){
   loading=true;err='';render();
@@ -437,7 +437,7 @@ function searchKey(value){
 }
 function offers(){
   const t=searchKey(q);
-  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||searchKey([o.s,o.n,o.c,o.u,o.cond].join(' ')).includes(t)));
+  const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.searchText||searchKey([o.s,o.n,o.c,o.u,o.cond].join(' '))).includes(t)));
   let body;
   if(loading)body='<div class="grid" aria-busy="true" aria-label="Hämtar erbjudanden">'+'<div class="card skel"></div>'.repeat(4)+'</div>';
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
