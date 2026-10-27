@@ -466,6 +466,25 @@ footer a:hover{text-decoration:underline}
 }
 @media(prefers-reduced-motion:reduce){.search{transition:none!important}}
 
+
+/* ===== Produktbilder: mer enhetlig yta och tydligare rabattmärke ===== */
+.card .tile{isolation:isolate;background-image:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.055),transparent 68%)}
+.card .product-shot{padding:14px 10px 24px;transition:transform .25s ease}
+.card .logo-fallback{background:rgba(255,255,255,.025)}
+.card .tile .badge{box-shadow:0 3px 12px rgba(0,0,0,.2);letter-spacing:-.015em}
+.card .tile .fav{border:1px solid rgba(255,255,255,.18);box-shadow:0 3px 12px rgba(0,0,0,.18);color:#fff}
+.card .tile .fav.on{background:rgba(230,202,101,.2);border-color:rgba(230,202,101,.6);color:#F4D979}
+.card .tile .fav:focus-visible{outline:3px solid #E6CA65;outline-offset:2px}
+@media(hover:hover){
+  .card:hover .product-shot{transform:scale(1.025)}
+  .card .tile .fav:hover{border-color:rgba(230,202,101,.65)}
+}
+@media(max-width:380px){
+  .card .product-shot{padding:12px 8px 22px}
+  .card .tile .fav{width:32px;height:32px}
+}
+@media(prefers-reduced-motion:reduce){.card .product-shot{transition:none!important}.card:hover .product-shot{transform:none}}
+
 </style>
 </head>
 <body>
