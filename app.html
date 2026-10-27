@@ -548,9 +548,9 @@ async function toggleFav(id){
   }catch(e){
     had?favs.add(id):favs.delete(id);
     toast('Det gick inte att uppdatera sparlistan. Försök igen.');
+    render();
   }finally{
     favPending.delete(id);
-    render();
   }
 }
 
