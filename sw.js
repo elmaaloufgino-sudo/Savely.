@@ -1,4 +1,4 @@
-const CACHE = 'fyndaren-v18';
+const CACHE = 'fyndaren-v19';
 const SHELL = ['./', 'index.html', 'app.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
