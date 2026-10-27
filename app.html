@@ -354,7 +354,7 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.14)}
   <button data-tab="list"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>Sparlista<i class="nb" id="navCnt" hidden>0</i></button>
 </nav>
 <div id="modal"></div>
-<div class="toast" id="toast" role="status"></div>
+<div class="toast" id="toast" role="status" aria-atomic="true"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL='https://ebmqzrejrpijitxeggsl.supabase.co';
@@ -380,7 +380,7 @@ const colr=c=>/^#[0-9a-f]{3,8}$/i.test(c||'')?c:'#64748b';
 const kr=n=>n.toLocaleString('sv-SE',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2})+' kr';
 const pct=o=>Math.round((1-o.p/o.o)*100);
 const heart='<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg>';
-const clock='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+const clock='<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 const okUrl=u=>/^https:\/\/[^\s"'<>]+$/i.test(u||'')?u:'';
 const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få provision om du handlar via dem, utan extra kostnad för dig. <a href="om-oss.html">Läs mer</a></div>';
 const iso=d=>d&&/^\d{4}-\d{2}-\d{2}/.test(d)?String(d).slice(0,10):'';
@@ -504,7 +504,7 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 let authReturnFocus=null;
 function openAuth(note){
   authReturnFocus=document.activeElement;
-  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at" aria-describedby="auth-note"><h2 id="at">Logga in på Fyndaren</h2><p id="auth-note">${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert" aria-live="polite"></div><button class="btn" type="button" data-auth="in">Logga in</button><button class="btn ghost" type="button" data-auth="up">Skapa konto</button></div></div>`;
+  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at" aria-describedby="auth-note"><h2 id="at">Logga in på Fyndaren</h2><p id="auth-note">${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert" aria-live="polite" aria-atomic="true"></div><button class="btn" type="button" data-auth="in">Logga in</button><button class="btn ghost" type="button" data-auth="up">Skapa konto</button></div></div>`;
   setTimeout(()=>{const e=$('#em');if(e)e.focus()},0);
 }
 function closeAuth(){
