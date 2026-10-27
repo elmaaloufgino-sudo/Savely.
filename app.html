@@ -456,7 +456,7 @@ function compare(){
   const gs=[...new Set(DATA.filter(o=>o.g).map(o=>o.g))];
   if(!gs.length)return `<h2>Jämför jämförpris</h2><div class="empty"><b>${loading?'Hämtar…':'Inget att jämföra ännu'}</b></div>`;
   if(!gs.includes(cmp))cmp=gs[0];
-  const items=DATA.filter(o=>o.g===cmp&&o.uv!=null).sort((a,b)=>a.uv-b.uv);
+  const items=DATA.filter(o=>o.g===cmp&&Number.isFinite(o.uv)).sort((a,b)=>a.uv-b.uv);
   if(!items.length)return `<h2>Jämför jämförpris</h2><div class="chips" style="margin-top:0" role="group" aria-label="Produkter">${gs.map(g=>`<button class="chip" data-cmp="${esc(g)}" aria-pressed="${g===cmp}">${esc(g)}</button>`).join('')}</div><div class="empty"><b>Inga jämförpriser tillgängliga</b>Det finns inga jämförpriser för den här produktgruppen just nu.</div>`;
   const best=items[0].uv;
   return `<h2>Jämför jämförpris</h2><div class="chips" style="margin-top:0" role="group" aria-label="Produkter">${gs.map(g=>`<button class="chip" data-cmp="${esc(g)}" aria-pressed="${g===cmp}">${esc(g)}</button>`).join('')}</div>
