@@ -220,12 +220,10 @@ nav button:hover svg{transform:translateY(-2px);box-shadow:0 0 15px rgba(212,175
 .disc{font-size:12px;color:var(--mute);margin:6px 0 10px}.disc a{color:var(--gink)}
 
 /* ===== Hela kortet är en länk, villkor och kontrollerad ===== */
-.card:has(.go){cursor:pointer}
-.go a::after{content:"";position:absolute;inset:0;z-index:1;border-radius:16px}
-/* Hjärtat ska alltid ligga över kortets klickbara butikslager. */
+/* Butikslänken ska bara vara klickbar på själva knappen, inte täcka kortet. */
+.card:has(.go){cursor:default}
 .card .fav{position:absolute;z-index:10;pointer-events:auto;touch-action:manipulation}
-.go a:focus-visible::after{outline:2px solid var(--gink);outline-offset:-2px}
-.card .fav{z-index:3}
+.go a:focus-visible{outline:2px solid var(--gink);outline-offset:2px}
 .go a.pl{background:none;border:1px solid rgba(212,175,55,.5);color:var(--gink)}
 .cond{font-size:12px;font-weight:600;color:var(--gink);margin-top:6px}
 .chk{font-size:11px;color:var(--mute);margin-top:2px}
