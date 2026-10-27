@@ -186,7 +186,7 @@ nav button[aria-current="page"] svg{background:rgba(212,175,55,.22);border-color
 .card{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
 .tile{position:relative;height:112px;display:grid;place-items:center;overflow:hidden;background:var(--tc)}
 .tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,.32));pointer-events:none}
-.tl{position:relative;z-index:1;font-weight:800;font-size:26px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .5s ease}
+.tl{position:relative;z-index:1;font-weight:800;font-size:26px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4);transition:transform .5s ease}.tl.brand-logo{display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:28px 24px 12px;box-sizing:border-box;text-shadow:none}.tl.brand-logo img{display:block;max-width:100%;max-height:54px;object-fit:contain}.tl.brand-logo.apoteket{gap:7px;color:#fff;font-size:17px;font-weight:800;letter-spacing:-.6px}.tl.brand-logo.apoteket .apo-mark{width:30px;height:30px;flex:none;border-radius:8px;background:#fff;color:#16834a;display:grid;place-items:center;font-size:22px;font-weight:900}
 .card:hover .tl{transform:scale(1.12)}
 .tile .badge{z-index:2;top:8px;left:8px}
 .tile .fav{position:absolute;z-index:2;top:6px;right:6px;width:34px;height:34px;background:rgba(10,10,12,.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -296,7 +296,14 @@ async function loadFavs(){
   render();
 }
 
-function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button><span class="tl">${esc(o.l)}</span><span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
+function storeLogo(o){
+  const name=String(o.s||'').toLowerCase();
+  if(name.includes('power')) return '<span class="tl brand-logo power"><img src="https://via.tt.se/data/images/00189/2f03c73b-2031-43ab-a125-855a34a66275.png" alt="POWER" loading="lazy" referrerpolicy="no-referrer"></span>';
+  if(name.includes('apoteket')) return '<span class="tl brand-logo apoteket"><span class="apo-mark" aria-hidden="true">a</span><span>apoteket</span></span>';
+  return '<span class="tl">'+esc(o.l)+'</span>';
+}
+
+function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button>${storeLogo(o)}<span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
 
 function offers(){
   const t=q.trim().toLowerCase();
