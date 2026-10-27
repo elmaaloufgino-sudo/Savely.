@@ -475,11 +475,18 @@ function render(){
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),2200)}
 
+let authReturnFocus=null;
 function openAuth(note){
-  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at"><h2 id="at">Logga in på Fyndaren</h2><p>${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert"></div><button class="btn" data-auth="in">Logga in</button><button class="btn ghost" data-auth="up">Skapa konto</button></div></div>`;
-  setTimeout(()=>{const e=$('#em');if(e)e.focus()},50);
+  authReturnFocus=document.activeElement;
+  $('#modal').innerHTML=`<div class="modal" data-close><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="at" aria-describedby="auth-note"><h2 id="at">Logga in på Fyndaren</h2><p id="auth-note">${esc(note||'Skapa ett konto eller logga in.')}</p><input id="em" type="email" autocomplete="email" placeholder="E-post" aria-label="E-post"><input id="pw" type="password" autocomplete="current-password" placeholder="Lösenord (minst 6 tecken)" aria-label="Lösenord"><div class="msg" id="msg" role="alert" aria-live="polite"></div><button class="btn" type="button" data-auth="in">Logga in</button><button class="btn ghost" type="button" data-auth="up">Skapa konto</button></div></div>`;
+  setTimeout(()=>{const e=$('#em');if(e)e.focus()},0);
 }
-function closeAuth(){$('#modal').innerHTML=''}
+function closeAuth(){
+  $('#modal').innerHTML='';
+  const target=authReturnFocus;
+  authReturnFocus=null;
+  if(target&&target.isConnected&&typeof target.focus==='function')target.focus();
+}
 const setMsg=m=>{const e=$('#msg');if(e)e.textContent=m};
 
 async function doAuth(mode){
@@ -535,8 +542,21 @@ document.addEventListener('click',e=>{
   else if(d.copy){const c=d.copy;try{navigator.clipboard.writeText(c).then(()=>toast('Koden '+c+' är kopierad'),()=>toast('Din kod: '+c))}catch(x){toast('Din kod: '+c)}}
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeAuth();
-  if(e.key==='Enter'&&e.target.closest('.sheet'))doAuth('in');
+  const dialog=$('#modal .sheet');
+  if(!dialog)return;
+  if(e.key==='Escape'){e.preventDefault();closeAuth();return}
+  if(e.key==='Tab'){
+    const items=[...dialog.querySelectorAll('input:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter(el=>el.getClientRects().length);
+    if(!items.length){e.preventDefault();return}
+    const first=items[0],last=items[items.length-1];
+    if(e.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&(document.activeElement===last||!dialog.contains(document.activeElement))){e.preventDefault();first.focus()}
+    return;
+  }
+  if(e.key==='Enter'&&e.target.matches('.sheet input')){
+    e.preventDefault();
+    doAuth('in');
+  }
 });
 $('#q').addEventListener('input',e=>{q=e.target.value;if(tab!=='offers')tab='offers';render()});
 
