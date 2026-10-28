@@ -703,11 +703,7 @@ function storeLogo(o){
 }
 
 function productImage(o){
-  const verifiedImages={
-    202:'https://media.apotea.se/product-images/M/mittval-kvinna-100-tabletter-1-6.jpg',
-    205:'https://media.meds.se/meds/images/7319861019902_1/550/550/fill/c/aco-deo-sensitive-50-ml.jpg'
-  };
-  return verifiedImages[o.id]||o.img||null;
+  return o.img||null;
 }
 
 function productVisual(o){
