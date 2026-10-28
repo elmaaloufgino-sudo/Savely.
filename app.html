@@ -607,6 +607,14 @@ main{width:100%;min-width:0}
 .card[data-product]{cursor:pointer}
 .card[data-product]:focus-visible{outline:2px solid #E6CA65;outline-offset:3px}
 .card .go a{background:linear-gradient(135deg,#D4AF37,#E6CA65);border-color:#E6CA65;color:#0A0A0C;box-shadow:0 3px 12px rgba(212,175,55,.16)}
+.product-sheet .product-hero{position:relative}
+.product-carousel-btn{position:absolute;z-index:3;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(230,202,101,.85);background:rgba(10,10,12,.86);color:#F3D979;font:700 30px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.28);transition:background .2s,transform .2s}
+.product-carousel-btn:hover{background:linear-gradient(135deg,#D4AF37,#E6CA65);color:#0A0A0C}
+.product-carousel-btn:active{transform:translateY(-50%) scale(.94)}
+.product-carousel-btn.prev{left:8px}.product-carousel-btn.next{right:8px}
+.product-carousel-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.card .go a.pl{background:linear-gradient(135deg,#D4AF37,#E6CA65);border-color:#E6CA65;color:#0A0A0C;box-shadow:0 3px 12px rgba(212,175,55,.16)}
+@media(max-width:380px){.product-carousel-btn{width:36px;height:36px;font-size:27px}.product-carousel-btn.prev{left:5px}.product-carousel-btn.next{right:5px}}
 @media(min-width:520px){.product-sheet{width:min(100%,480px);border-radius:26px}.product-modal{align-items:center}}
 @media(prefers-reduced-motion:reduce){.product-sheet *{scroll-behavior:auto!important}}
 
@@ -729,7 +737,10 @@ function productVisual(o){
 
 function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card" data-product="${o.id}" tabindex="0" role="button" aria-label="Visa detaljer för ${esc(o.n)}"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button type="button" class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" onclick="event.preventDefault();event.stopPropagation();toggleFav(Number(this.dataset.fav));return false" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button>${productVisual(o)}<span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
 
-function openProduct(id){
+function openProduct(id,keepCarousel=false){
+  if(!keepCarousel){activeProductIds=[...document.querySelectorAll('.card[data-product]')].map(el=>Number(el.dataset.product)).filter((value,index,all)=>Number.isFinite(value)&&all.indexOf(value)===index);if(!activeProductIds.includes(Number(id)))activeProductIds=DATA.map(item=>item.id)}
+  if(!activeProductIds.length)activeProductIds=DATA.map(item=>item.id);
+  activeProductIndex=Math.max(0,activeProductIds.indexOf(Number(id)));
   const o=DATA.find(item=>item.id===id);
   if(!o)return;
   const sv=Math.round((o.o-o.p)*100)/100;
@@ -745,17 +756,21 @@ function openProduct(id){
   const url=o.a||o.w;
   activeProductId=o.id;
   const cta=url?'<a class="product-cta" href="'+esc(url)+'" target="_blank" rel="'+(o.a?'sponsored nofollow noopener noreferrer':'noopener noreferrer')+'">'+(o.a?'Till butiken ↗':'Till erbjudandet ↗')+'</a>':'';
-  $('#modal').innerHTML='<div class="modal product-modal" data-product-close><section class="sheet product-sheet" role="dialog" aria-modal="true" aria-labelledby="product-dialog-title"><button type="button" class="product-close" data-product-close aria-label="Stäng produktdetaljer">×</button><div class="product-hero'+(/apoteket/i.test(o.s)?' apoteket-hero':'')+'" style="--tc:'+colr(o.col)+'">'+image+'</div><div class="product-store">'+esc(o.s)+' · '+esc(o.c)+'</div><h2 class="product-name" id="product-dialog-title">'+esc(o.n)+'</h2><div class="product-price"><strong>'+kr(o.p)+'</strong><s>'+kr(o.o)+'</s><span class="product-saving">Spara '+kr(sv)+' ('+pct(o)+'%)</span></div><div class="product-details">'+details+'</div>'+cta+'</section></div>';
+  const carouselButtons=activeProductIds.length>1?'<button type="button" class="product-carousel-btn prev" data-product-prev aria-label="Föregående erbjudande" title="Föregående erbjudande">‹</button><button type="button" class="product-carousel-btn next" data-product-next aria-label="Nästa erbjudande" title="Nästa erbjudande">›</button>':'';
+  $('#modal').innerHTML='<div class="modal product-modal" data-product-close><section class="sheet product-sheet" role="dialog" aria-modal="true" aria-labelledby="product-dialog-title"><button type="button" class="product-close" data-product-close aria-label="Stäng produktdetaljer">×</button><div class="product-hero'+(/apoteket/i.test(o.s)?' apoteket-hero':'')+'" style="--tc:'+colr(o.col)+'">'+image+carouselButtons+'</div><div class="product-store">'+esc(o.s)+' · '+esc(o.c)+'</div><h2 class="product-name" id="product-dialog-title">'+esc(o.n)+'</h2><div class="product-price"><strong>'+kr(o.p)+'</strong><s>'+kr(o.o)+'</s><span class="product-saving">Spara '+kr(sv)+' ('+pct(o)+'%)</span></div><div class="product-details">'+details+'</div>'+cta+'</section></div>';
   const close=$('#modal .product-close');
   if(close)close.focus();
 }
+function stepProduct(direction){if(activeProductIds.length<2)return;activeProductIndex=(activeProductIndex+direction+activeProductIds.length)%activeProductIds.length;openProduct(activeProductIds[activeProductIndex],true)}
 function closeProduct(){
   const cardEl=document.querySelector('.card[data-product="'+(activeProductId||'')+'"]');
   $('#modal').innerHTML='';
-  activeProductId=null;
+  activeProductId=null;activeProductIds=[];activeProductIndex=0;
   if(cardEl&&cardEl.isConnected)cardEl.focus();
 }
 let activeProductId=null;
+let activeProductIds=[];
+let activeProductIndex=0;
 function searchKey(value){
   return String(value==null?'':value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('sv-SE').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 }
@@ -884,6 +899,8 @@ document.addEventListener('click',e=>{
   if(e.target.matches('.product-close')||e.target.matches('.product-modal')){closeProduct();return}
   if(e.target.matches('[data-close]')){closeAuth();return}
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.productPrev){stepProduct(-1);return}
+  if(d.productNext){stepProduct(1);return}
   if(d.tab){tab=d.tab;anim=true;render();scrollTo(0,0)}
   else if(d.tick){const o=DATA.find(x=>x.id===+d.tick);if(o){q=o.n;$('#q').value=o.n;cat='Alla';tab='offers';anim=true;render();scrollToTarget(document.querySelector('.grid')||document.body)}}
   else if(d.fav){toggleFav(+d.fav)}
@@ -911,6 +928,8 @@ document.addEventListener('keydown',e=>{
   const dialog=$('#modal .sheet');
   if(!dialog)return;
   if(e.key==='Escape'){e.preventDefault();if($('#modal .product-sheet'))closeProduct();else closeAuth();return}
+  if($('#modal .product-sheet')&&e.key==='ArrowLeft'){e.preventDefault();stepProduct(-1);return}
+  if($('#modal .product-sheet')&&e.key==='ArrowRight'){e.preventDefault();stepProduct(1);return}
   if(e.key==='Tab'){
     const items=[...dialog.querySelectorAll('input:not([disabled]),button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter(el=>el.getClientRects().length);
     if(!items.length){e.preventDefault();return}
