@@ -703,7 +703,11 @@ function storeLogo(o){
 }
 
 function productImage(o){
-  return o.img||null;
+  const verifiedImages={
+    201:'https://media.apotea.se/product-images/XL/mittval-myfocus-100-tabletter-0.jpg',
+    205:'https://media.meds.se/meds/images/7319861019902_1/460/460/fill/c/aco-deo-sensitive-50-ml.jpg'
+  };
+  return verifiedImages[o.id]||o.img||null;
 }
 
 function productVisual(o){
