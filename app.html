@@ -702,9 +702,18 @@ function storeLogo(o){
   return '<span class="tl">'+esc(o.l)+'</span>';
 }
 
+function productImage(o){
+  const verifiedImages={
+    202:'https://media.apotea.se/product-images/M/mittval-kvinna-100-tabletter-1-6.jpg',
+    205:'https://media.meds.se/meds/images/7319861019902_1/550/550/fill/c/aco-deo-sensitive-50-ml.jpg'
+  };
+  return verifiedImages[o.id]||o.img||null;
+}
+
 function productVisual(o){
-  if(!o.img)return storeLogo(o);
-  return `<img class="product-shot" src="${esc(o.img)}" alt="${esc(o.n)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-fallback" style="display:none">${storeLogo(o)}</span>`;
+  const img=productImage(o);
+  if(!img)return storeLogo(o);
+  return `<img class="product-shot" src="${esc(img)}" alt="${esc(o.n)}" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="logo-fallback" style="display:none">${storeLogo(o)}</span>`;
 }
 
 function card(o){const f=favs.has(o.id);const sv=Math.round((o.o-o.p)*100)/100;return `<article class="card" data-product="${o.id}" tabindex="0" role="button" aria-label="Visa detaljer för ${esc(o.n)}"><div class="tile" style="--tc:${colr(o.col)}"><span class="badge">-${pct(o)}%</span><button type="button" class="fav ${f?'on':''} ${o.id===popId?'pop':''}" data-fav="${o.id}" onclick="event.preventDefault();event.stopPropagation();toggleFav(Number(this.dataset.fav));return false" aria-pressed="${f}" aria-label="${f?'Ta bort från sparlistan':'Spara i sparlistan'}">${heart}</button>${productVisual(o)}<span class="ptag">${kr(o.p)}</span></div><div class="info"><div class="store">${esc(o.s)}<span class="cat"> · ${esc(o.c)}</span></div><h3>${esc(o.n)}</h3><div class="price"><s>${kr(o.o)}</s><span class="sv">Spara ${kr(sv)}</span></div>${o.u?`<div class="mute">Jmf: ${esc(o.u)}</div>`:''}${o.m?`<span class="mem">Kräver ${esc(o.m)}</span>`:''}${o.cond?`<div class="cond">${esc(o.cond)}</div>`:''}<div class="exp">${clock} Gäller t.o.m. ${esc(o.e)}</div>${o.k?`<div class="chk">Kontrollerad ${dm(o.k)}</div>`:''}${o.a?`<div class="go"><a href="${esc(o.a)}" target="_blank" rel="sponsored nofollow noopener noreferrer">Till butiken ↗</a><span class="adl">Annonslänk</span></div>`:(o.w?`<div class="go"><a class="pl" href="${esc(o.w)}" target="_blank" rel="noopener noreferrer">Till erbjudandet ↗</a></div>`:'')}</div></article>`}
@@ -713,7 +722,8 @@ function openProduct(id){
   const o=DATA.find(item=>item.id===id);
   if(!o)return;
   const sv=Math.round((o.o-o.p)*100)/100;
-  const image=o.img?'<img src="'+esc(o.img)+'" alt="'+esc(o.n)+'" loading="eager" decoding="async" onerror="this.style.display=\'none\'">':storeLogo(o);
+  const img=productImage(o);
+  const image=img?'<img src="'+esc(img)+'" alt="'+esc(o.n)+'" loading="eager" decoding="async" onerror="this.style.display=\'none\'">':storeLogo(o);
   const details=[
     o.u?'<div class="product-detail"><b>Jämförpris</b>'+esc(o.u)+'</div>':'',
     o.m?'<div class="product-detail"><b>Medlemskap</b>Kräver '+esc(o.m)+'</div>':'',
