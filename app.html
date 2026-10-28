@@ -762,6 +762,23 @@ function openProduct(id,keepCarousel=false){
   if(close)close.focus();
 }
 function stepProduct(direction){if(activeProductIds.length<2)return;activeProductIndex=(activeProductIndex+direction+activeProductIds.length)%activeProductIds.length;openProduct(activeProductIds[activeProductIndex],true)}
+let productSwipeStart=null;
+document.addEventListener('touchstart',e=>{
+  const hero=e.target.closest&&e.target.closest('#modal .product-hero');
+  if(!hero||activeProductIds.length<2||e.target.closest('button')){productSwipeStart=null;return}
+  const t=e.changedTouches&&e.changedTouches[0];
+  if(t)productSwipeStart={x:t.clientX,y:t.clientY};
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!productSwipeStart)return;
+  const hero=e.target.closest&&e.target.closest('#modal .product-hero');
+  const t=e.changedTouches&&e.changedTouches[0],start=productSwipeStart;
+  productSwipeStart=null;
+  if(!hero||!t)return;
+  const dx=t.clientX-start.x,dy=t.clientY-start.y;
+  if(Math.abs(dx)<45||Math.abs(dx)<Math.abs(dy)*1.25)return;
+  stepProduct(dx<0?1:-1);
+},{passive:true});
 function closeProduct(){
   const cardEl=document.querySelector('.card[data-product="'+(activeProductId||'')+'"]');
   $('#modal').innerHTML='';
