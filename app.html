@@ -608,6 +608,8 @@ main{width:100%;min-width:0}
 .card[data-product]:focus-visible{outline:2px solid #E6CA65;outline-offset:3px}
 .card .go a{background:linear-gradient(135deg,#D4AF37,#E6CA65);border-color:#E6CA65;color:#0A0A0C;box-shadow:0 3px 12px rgba(212,175,55,.16)}
 .product-sheet .product-hero{position:relative}
+.product-sheet .product-detail-discount{position:absolute;top:12px;left:12px;z-index:4;display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:8px;background:#dc2626;color:#fff;font-size:14px;font-weight:800;line-height:1.2;box-shadow:0 3px 12px rgba(0,0,0,.24)}
+.product-sheet .product-saving{color:#22c55e!important;font-weight:800}
 .product-carousel-btn{position:absolute;z-index:3;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(230,202,101,.85);background:rgba(10,10,12,.86);color:#F3D979;font:700 30px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.28);transition:background .2s,transform .2s}
 .product-carousel-btn:hover{background:linear-gradient(135deg,#D4AF37,#E6CA65);color:#0A0A0C}
 .product-carousel-btn:active{transform:translateY(-50%) scale(.94)}
@@ -833,7 +835,7 @@ function openProduct(id,keepCarousel=false){
   activeProductId=o.id;
   const cta=url?'<a class="product-cta" href="'+esc(url)+'" target="_blank" rel="'+(o.a?'sponsored nofollow noopener noreferrer':'noopener noreferrer')+'">'+(o.a?'Till butiken ↗':'Till erbjudandet ↗')+'</a>':'';
   const carouselButtons=activeProductIds.length>1?'<button type="button" class="product-carousel-btn prev" data-product-prev aria-label="Föregående erbjudande" title="Föregående erbjudande">‹</button><button type="button" class="product-carousel-btn next" data-product-next aria-label="Nästa erbjudande" title="Nästa erbjudande">›</button>':'';
-  $('#modal').innerHTML='<div class="modal product-modal" data-product-close><section class="sheet product-sheet" role="dialog" aria-modal="true" aria-labelledby="product-dialog-title"><button type="button" class="product-close" data-product-close aria-label="Stäng produktdetaljer">×</button><div class="product-hero'+(/apoteket/i.test(o.s)?' apoteket-hero':'')+'" style="--tc:'+colr(o.col)+'">'+image+carouselButtons+'</div><div class="product-store">'+esc(o.s)+' · '+esc(o.c)+'</div><h2 class="product-name" id="product-dialog-title">'+esc(o.n)+'</h2><div class="product-price"><strong>'+kr(o.p)+'</strong><s>'+kr(o.o)+'</s><span class="product-saving">Spara '+kr(sv)+' ('+pct(o)+'%)</span></div><div class="product-details">'+details+'</div>'+cta+'</section></div>';
+  $('#modal').innerHTML='<div class="modal product-modal" data-product-close><section class="sheet product-sheet" role="dialog" aria-modal="true" aria-labelledby="product-dialog-title"><button type="button" class="product-close" data-product-close aria-label="Stäng produktdetaljer">×</button><div class="product-hero'+(/apoteket/i.test(o.s)?' apoteket-hero':'')+'" style="--tc:'+colr(o.col)+'"><span class="product-detail-discount">-'+pct(o)+'%</span>'+image+carouselButtons+'</div><div class="product-store">'+esc(o.s)+' · '+esc(o.c)+'</div><h2 class="product-name" id="product-dialog-title">'+esc(o.n)+'</h2><div class="product-price"><strong>'+kr(o.p)+'</strong><s>'+kr(o.o)+'</s><span class="product-saving">Spara '+kr(sv)+' ('+pct(o)+'%)</span></div><div class="product-details">'+details+'</div>'+cta+'</section></div>';
   const close=$('#modal .product-close');
   if(close)close.focus();
 }
