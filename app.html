@@ -653,6 +653,12 @@ main{width:100%;min-width:0}
 @media(hover:hover){.card:hover .product-shot-401{transform:scale(.88)!important}.card:hover .product-shot-402{transform:translateY(-10px)!important}}
 .sort-row{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:10px 0 14px;color:var(--mute);font-size:13px}.sort-row select{max-width:72%;padding:10px 12px;border:1px solid var(--gink);border-radius:12px;background:#151518;color:inherit;font:inherit;outline-offset:3px}
 
+/* Fyndaren: säkra att produktbilder alltid ligger över kortets bakgrunds-overlay */
+.tile .product-shot{z-index:2;display:block;visibility:visible;opacity:1;object-fit:contain;background:#fff}
+.tile::after{z-index:1}
+.tile .logo-fallback{z-index:2;background:#fff}
+.tile .badge,.tile .fav,.tile .ptag{z-index:3}
+
 /* Fyndaren: tre kompaktkort per rad och tydlig CTA längst ner */
 @media(min-width:381px) and (max-width:600px){
   .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
