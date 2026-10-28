@@ -651,6 +651,7 @@ main{width:100%;min-width:0}
 .product-sheet .product-hero img.product-detail-shot-402{object-fit:contain!important;object-position:50% 35%!important;padding:0 8px 0!important;transform:translateY(-8px)!important;background:transparent!important}
 .product-sheet .product-hero img.product-detail-shot-401{object-fit:contain!important;object-position:50% 50%!important;padding:0 12px!important;transform:scale(.9)!important;background:transparent!important}
 @media(hover:hover){.card:hover .product-shot-401{transform:scale(.88)!important}.card:hover .product-shot-402{transform:translateY(-10px)!important}}
+.sort-row{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:10px 0 14px;color:var(--mute);font-size:13px}.sort-row select{max-width:72%;padding:10px 12px;border:1px solid var(--gink);border-radius:12px;background:#151518;color:inherit;font:inherit;outline-offset:3px}
 </style>
 </head>
 <body>
@@ -691,7 +692,7 @@ const DEMO=false; // true visar rutan 'under uppbyggnad / exempel'
 let CODES=[];
 const CATS=['Alla','Mat','Elektronik','Apotek','Kläder'];
 const ICONS={Mat:'🛒',Elektronik:'📱',Apotek:'💊',Kläder:'👕'};
-let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,cmp='',favs=new Set(),user=null;
+let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,sortMode='recommended',cmp='',favs=new Set(),user=null;
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -827,14 +828,22 @@ function searchKey(value){
 function offers(){
   const t=searchKey(q);
   const list=DATA.filter(o=>(cat==='Alla'||o.c===cat)&&(!hideMem||!o.m)&&(!t||(o.searchText||searchKey([o.s,o.n,o.c,o.u,o.cond].join(' '))).includes(t)));
+  const sorted=list.slice().sort((a,b)=>{
+    if(sortMode==='cheapest')return (Number(a.p)||0)-(Number(b.p)||0);
+    if(sortMode==='expensive')return (Number(b.p)||0)-(Number(a.p)||0);
+    if(sortMode==='newest')return String(b.k||'').localeCompare(String(a.k||''))||(Number(b.id)||0)-(Number(a.id)||0);
+    if(sortMode==='discount')return (pct(b)||0)-(pct(a)||0)||((Number(b.o)||0)-(Number(b.p)||0))-((Number(a.o)||0)-(Number(a.p)||0));
+    return 0;
+  });
   let body;
   if(loading)body='<div class="grid" aria-busy="true" aria-label="Hämtar erbjudanden">'+'<div class="card skel"></div>'.repeat(4)+'</div>';
   else if(err)body=`<div class="empty"><b>Något gick fel</b>${esc(err)}<button class="btn" data-retry>Försök igen</button></div>`;
   else if(!list.length)body=`<div class="empty"><b>Inga träffar</b>${t?'Vi hittade inga erbjudanden som matchar din sökning.':'Det finns inga erbjudanden i den här vyn just nu.'}<div class="empty-actions">${t?'<button class="btn" data-clear-search>Rensa sökning</button>':''}${cat!=='Alla'?'<button class="btn ghost" data-reset-filters>Visa alla kategorier</button>':''}${hideMem?'<button class="btn ghost" data-show-membership>Visa även medlemspriser</button>':''}</div></div>`;
-  else body=`<div class="grid">${list.map(card).join('')}</div>`;
+  else body=`<div class="grid">${sorted.map(card).join('')}</div>`;
   return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<h2 class="campaign-title">Heta kampanjer just nu</h2><div class="hero">${HERO.map((h,i)=>`<button class="hc" data-hero="${i}" style="background:${h.bg}"><small>Veckans erbjudande</small><b>${h.t}</b><span>${h.s}</span></button>`).join('')}</div>
   <h2 class="offers-title">Aktiva erbjudanden<span class="n" aria-live="polite">${loading||err?'':DATA.length+' st'}</span></h2>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
+  <div class="sort-row"><label for="offer-sort">Sortera</label><select id="offer-sort" aria-label="Sortera erbjudanden"><option value="recommended"${sortMode==='recommended'?' selected':''}>Rekommenderade</option><option value="cheapest"${sortMode==='cheapest'?' selected':''}>Billigaste först</option><option value="expensive"${sortMode==='expensive'?' selected':''}>Dyraste först</option><option value="newest"${sortMode==='newest'?' selected':''}>Senaste först</option><option value="discount"${sortMode==='discount'?' selected':''}>Störst rabatt först</option></select></div>
   <div class="sw"><button data-mem aria-pressed="${hideMem}" aria-label="Dölj erbjudanden som kräver medlemskap"></button>Dölj erbjudanden som kräver medlemskap</div>
   ${body}`}
 
@@ -1009,6 +1018,7 @@ if(sb){
 }
 loadDeals();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='offer-sort'){sortMode=e.target.value;render();}});
 </script>
 </body>
 </html>
