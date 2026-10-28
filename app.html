@@ -662,27 +662,29 @@ main{width:100%;min-width:0}
 /* Fyndaren: mobilkort med bättre proportioner och stabil bildyta */
 @media(min-width:381px) and (max-width:600px){
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .card{height:auto!important;min-height:0!important;overflow:visible!important}
   .card .tile{height:124px!important;min-height:124px!important;position:relative!important;overflow:hidden!important;background:#fff!important}
   .card .product-shot{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain!important;object-position:center!important;padding:8px!important;transform:none!important;z-index:2!important;background:#fff!important}
-  .card .info{padding:9px 8px!important;gap:6px!important}
+  .card .info{height:auto!important;min-height:0!important;padding:9px 8px!important;gap:6px!important;overflow:visible!important}
   .card .store{font-size:10px!important;line-height:1.3}
   .card h3{font-size:12px!important;line-height:1.3;overflow-wrap:anywhere}
   .card .price{gap:4px!important;flex-wrap:wrap}
   .card .price s,.card .sv{font-size:10px!important}
   .card .exp,.card .chk,.card .cond,.card .mute{font-size:10px!important;line-height:1.35}
-  .card .go{margin-top:auto!important;padding-top:8px;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:5px}
-  .card .go a,.card .go .offer-cta{width:100%;min-height:38px;padding:7px 5px;font-size:11px;white-space:normal;text-align:center;justify-content:center}
+  .card .go{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;flex:0 0 auto!important;flex-direction:column;align-items:stretch;gap:5px;width:100%;height:auto!important;min-height:38px!important;margin-top:8px!important;padding-top:8px!important;overflow:visible!important}
+  .card .go a,.card .go .offer-cta{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;flex:0 0 auto!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;min-height:38px!important;height:auto!important;padding:7px 5px!important;font-size:11px!important;line-height:1.25!important;white-space:normal!important;text-align:center!important;align-items:center!important;justify-content:center!important}
   .card .go .adl{font-size:9px;text-align:center}
 }
 @media(max-width:380px){
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .card{height:auto!important;min-height:0!important;overflow:visible!important}
   .card .tile{height:112px!important;min-height:112px!important}
   .card .product-shot{padding:6px!important}
-  .card .info{padding:8px 6px!important}
+  .card .info{height:auto!important;min-height:0!important;padding:8px 6px!important;overflow:visible!important}
+  .card .go{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;flex:0 0 auto!important;width:100%;min-height:38px!important;height:auto!important;margin-top:7px!important;padding-top:6px!important;overflow:visible!important}
+  .card .go a,.card .go .offer-cta{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;box-sizing:border-box!important;width:100%!important;min-height:38px!important;height:auto!important;padding:7px 5px!important;font-size:11px!important;align-items:center!important;justify-content:center!important}
   .card h3{font-size:11px!important;line-height:1.3;overflow-wrap:anywhere}
-  .card .go .offer-cta{min-height:38px;padding:7px 5px;font-size:11px}
 }
-.card .info{min-height:100%}
 .card .go{margin-top:auto}
 .card .go .offer-cta{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 13px;border:1px solid #E6CA65;border-radius:11px;background:linear-gradient(135deg,#D4AF37,#E6CA65);color:#0A0A0C;font:800 13px/1.2 "Plus Jakarta Sans",system-ui,sans-serif;text-decoration:none;cursor:pointer}
 .card .go .offer-cta:focus-visible{outline:3px solid #fff;outline-offset:2px}
