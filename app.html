@@ -659,19 +659,28 @@ main{width:100%;min-width:0}
 .tile .logo-fallback{z-index:2;background:#fff}
 .tile .badge,.tile .fav,.tile .ptag{z-index:3}
 
-/* Fyndaren: tre kompaktkort per rad och tydlig CTA längst ner */
+/* Fyndaren: mobilkort med bättre proportioner och stabil bildyta */
 @media(min-width:381px) and (max-width:600px){
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
-  .card .tile{height:104px!important}
-  .card .info{padding:8px 7px!important;gap:5px!important}
-  .card .store{font-size:9px!important;line-height:1.3}
-  .card h3{font-size:12px!important;line-height:1.25}
-  .card .price{gap:3px!important;flex-wrap:wrap}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+  .card .tile{height:124px!important;min-height:124px!important;position:relative!important;overflow:hidden!important;background:#fff!important}
+  .card .product-shot{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain!important;object-position:center!important;padding:8px!important;transform:none!important;z-index:2!important;background:#fff!important}
+  .card .info{padding:9px 8px!important;gap:6px!important}
+  .card .store{font-size:10px!important;line-height:1.3}
+  .card h3{font-size:12px!important;line-height:1.3;overflow-wrap:anywhere}
+  .card .price{gap:4px!important;flex-wrap:wrap}
   .card .price s,.card .sv{font-size:10px!important}
-  .card .exp,.card .chk,.card .cond,.card .mute{font-size:10px!important;line-height:1.3}
-  .card .go{margin-top:auto!important;padding-top:7px;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:4px}
-  .card .go a,.card .go .offer-cta{width:100%;min-height:36px;padding:6px 3px;font-size:10px;white-space:normal;text-align:center;justify-content:center}
+  .card .exp,.card .chk,.card .cond,.card .mute{font-size:10px!important;line-height:1.35}
+  .card .go{margin-top:auto!important;padding-top:8px;width:100%;display:flex;flex-direction:column;align-items:stretch;gap:5px}
+  .card .go a,.card .go .offer-cta{width:100%;min-height:38px;padding:7px 5px;font-size:11px;white-space:normal;text-align:center;justify-content:center}
   .card .go .adl{font-size:9px;text-align:center}
+}
+@media(max-width:380px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .card .tile{height:112px!important;min-height:112px!important}
+  .card .product-shot{padding:6px!important}
+  .card .info{padding:8px 6px!important}
+  .card h3{font-size:11px!important;line-height:1.3;overflow-wrap:anywhere}
+  .card .go .offer-cta{min-height:38px;padding:7px 5px;font-size:11px}
 }
 .card .info{min-height:100%}
 .card .go{margin-top:auto}
