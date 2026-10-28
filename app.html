@@ -858,7 +858,7 @@ async function toggleFav(id){
 }
 
 document.addEventListener('click',e=>{
-  if(e.target.closest('[data-product-close]')){closeProduct();return}
+  if(e.target.matches('.product-close')||e.target.matches('.product-modal')){closeProduct();return}
   if(e.target.matches('[data-close]')){closeAuth();return}
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.tab){tab=d.tab;anim=true;render();scrollTo(0,0)}
