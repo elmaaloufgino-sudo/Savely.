@@ -618,6 +618,32 @@ main{width:100%;min-width:0}
 @media(min-width:520px){.product-sheet{width:min(100%,480px);border-radius:26px}.product-modal{align-items:center}}
 @media(prefers-reduced-motion:reduce){.product-sheet *{scroll-behavior:auto!important}}
 
+
+/* ===== Bildfix: hela produkten synlig och optiskt centrerad ===== */
+.card .product-shot{
+  object-fit:contain;
+  object-position:50% 50%;
+  padding:10px !important;
+  transform:none;
+}
+.card .tile{
+  display:grid;
+  place-items:center;
+}
+@media(hover:hover){
+  .card:hover .product-shot{transform:none}
+}
+.product-sheet .product-hero img{
+  object-fit:contain;
+  object-position:50% 50%;
+  padding:12px !important;
+}
+.product-sheet .product-hero img.product-detail-shot-208,
+.product-sheet .product-hero img.product-detail-shot-207{
+  object-fit:contain;
+  object-position:50% 50%;
+}
+
 </style>
 </head>
 <body>
