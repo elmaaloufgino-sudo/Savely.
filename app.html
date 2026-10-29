@@ -647,6 +647,22 @@ main{width:100%;min-width:0}
 }
 
 
+/* Klädesplagg: visa hela produktfotot i detaljvyn, utan beskärning */
+.product-sheet .product-hero img.product-detail-shot-413,
+.product-sheet .product-hero img.product-detail-shot-414{
+  display:block!important;
+  width:auto!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  padding:8px!important;
+  margin:0 auto!important;
+  transform:none!important;
+  background:#fff!important;
+}
+
 /* Kläder: korrigerad position och storlek */
 .card .product-shot-402{object-fit:contain!important;object-position:50% 35%!important;padding:0 4px 0!important;transform:translateY(-10px)!important}
 .card .product-shot-401{object-fit:contain!important;object-position:50% 50%!important;padding:0 12px!important;transform:scale(.88)!important}
