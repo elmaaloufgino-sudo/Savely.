@@ -581,6 +581,10 @@ main{width:100%;min-width:0}
 }
 
 
+
+/* Popup: centrera butikens logotyp i bildytan utan att flytta rabattmärket. */
+.product-sheet .product-hero > .tl{position:absolute;inset:0;display:grid;place-items:center;width:100%;height:100%;box-sizing:border-box;text-align:center;padding:0 24px;z-index:2}
+
 /* Product details: accessible enlarged offer sheet */
 .product-sheet{position:relative;max-height:min(88dvh,900px);overflow-y:auto;overscroll-behavior:contain;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));border-radius:26px;border-color:rgba(230,202,101,.3)}
 .product-modal{align-items:center}
