@@ -778,8 +778,8 @@ function currentCampaigns(){
 }
 const DEMO=false; // true visar rutan 'under uppbyggnad / exempel'
 let CODES=[];
-const CATS=['Alla','Mat','Elektronik','Apotek','Kläder','Bygg & Hemmafix'];
-const ICONS={Mat:'🛒',Elektronik:'📱',Apotek:'💊',Kläder:'👕','Bygg & Hemmafix':'🛠️'};
+const CATS=['Alla','Mat & Dryck','Skönhet & Personlig vård','Hem & Inredning','Elektronik','Apotek','Kläder','Bygg & Hemmafix'];
+const ICONS={'Mat & Dryck':'🥗','Skönhet & Personlig vård':'✨','Hem & Inredning':'🛋️',Elektronik:'📱',Apotek:'💊',Kläder:'👕','Bygg & Hemmafix':'🛠️'};
 let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,sortMode='recommended',cmp='',favs=new Set(),user=null;
 
 const $=s=>document.querySelector(s);
@@ -794,7 +794,7 @@ const DISC='<div class="disc">Vissa länkar är annonslänkar. Fyndaren kan få 
 const iso=d=>d&&/^\d{4}-\d{2}-\d{2}/.test(d)?String(d).slice(0,10):'';
 const dm=d=>iso(d)?(+d.slice(8,10))+'/'+(+d.slice(5,7)):'';
 const todayISO=()=>{const t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0')};
-const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),lc:/LAST_CHANCE_IMAGE/.test(r.conditions||''),cond:/LAST_CHANCE_IMAGE/.test(r.conditions||'')?'':(r.conditions||''),k:iso(r.checked_on),vt:iso(r.valid_to),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:iso(r.valid_to)?dm(r.valid_to):r.valid_until,g:r.compare_group,img:r.image_url||null,searchText:searchKey([r.store,r.name,r.category,r.unit_text,/LAST_CHANCE_IMAGE/.test(r.conditions||'')?'':(r.conditions||'')].join(' '))});
+const norm=r=>({a:okUrl(r.affiliate_url),w:okUrl(r.shop_url),lc:/LAST_CHANCE_IMAGE/.test(r.conditions||''),cond:/LAST_CHANCE_IMAGE/.test(r.conditions||'')?'':(r.conditions||''),k:iso(r.checked_on),vt:iso(r.valid_to),id:r.id,s:r.store,l:r.logo,col:r.color,c:r.category==='Mat'?'Mat & Dryck':r.category,n:r.name,p:+r.price,o:+r.old_price,u:r.unit_text,uv:r.unit_price==null?null:+r.unit_price,m:r.membership,e:iso(r.valid_to)?dm(r.valid_to):r.valid_until,g:r.compare_group,img:r.image_url||null,searchText:searchKey([r.store,r.name,r.category,r.unit_text,/LAST_CHANCE_IMAGE/.test(r.conditions||'')?'':(r.conditions||'')].join(' '))});
 
 async function loadDeals(){
   loading=true;err='';render();
