@@ -647,6 +647,34 @@ main{width:100%;min-width:0}
 }
 
 
+/* Popup-fix: låt klänningsbilden fylla bildytan utan att klippas av grid-layouten */
+.product-sheet .product-hero{
+  position:relative!important;
+  display:block!important;
+  height:clamp(280px,52vh,520px)!important;
+  min-height:280px!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+.product-sheet .product-hero img.product-detail-shot-413,
+.product-sheet .product-hero img.product-detail-shot-414{
+  position:absolute!important;
+  inset:0!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  padding:8px!important;
+  margin:0!important;
+  transform:none!important;
+  background:#fff!important;
+}
+
 /* Klädesplagg: visa hela produktfotot i detaljvyn, utan beskärning */
 .product-sheet .product-hero img.product-detail-shot-413,
 .product-sheet .product-hero img.product-detail-shot-414{
