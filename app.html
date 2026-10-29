@@ -1133,7 +1133,7 @@ document.addEventListener('click',e=>{
   else if(d.tick){const o=DATA.find(x=>x.id===+d.tick);if(o){q=o.n;$('#q').value=o.n;cat='Alla';tab='offers';anim=true;render();scrollToTarget(document.querySelector('.grid')||document.body)}}
   else if(d.fav){toggleFav(+d.fav)}
   else if(d.productCta){openProduct(+d.productCta)}
-  else if(d.cat){cat=d.cat;anim=true;render()}
+  else if(d.cat){const chips=document.querySelector('.chips');const chipsLeft=chips?chips.scrollLeft:0;cat=d.cat;anim=true;render();const nextChips=document.querySelector('.chips');if(nextChips)nextChips.scrollLeft=chipsLeft}
   else if(d.hero){const offer=DATA.find(o=>o.id===+d.hero);if(offer)openProduct(offer.id)}
   else if(d.mem!==undefined){hideMem=!hideMem;anim=true;render()}
   else if(d.cmp){cmp=d.cmp;anim=true;render()}
