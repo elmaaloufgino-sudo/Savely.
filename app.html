@@ -796,6 +796,27 @@ main{width:100%;min-width:0}
 /* Visuell centrering av BioSalma Magnesium och ACO Roll-on i produktvyn */
 .product-sheet .product-hero img.product-detail-shot-208{transform:translate(14%,8%)!important}
 .product-sheet .product-hero img.product-detail-shot-207{transform:translate(54%,8%)!important}
+
+/* Mobilfix: ge kategoriraden luft från vänsterkanten och lås sidledsförskjutning */
+@media(max-width:600px){
+  html,body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden!important;
+    overscroll-behavior-x:none;
+  }
+  body{position:relative;touch-action:pan-y}
+  main{padding-left:12px!important;padding-right:12px!important}
+  .chips{
+    margin-left:-12px!important;
+    margin-right:-12px!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+    max-width:calc(100% + 24px);
+    overscroll-behavior-x:contain;
+    touch-action:pan-x;
+  }
+}
 </style>
 </head>
 <body>
