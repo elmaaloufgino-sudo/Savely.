@@ -727,13 +727,9 @@ let sb=null;
 try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
 
 function currentCampaigns(){
-  return DATA.filter(o=>o.n&&o.s&&Number(o.p)>0)
+  return DATA.filter(o=>o.n&&o.s&&Number(o.p)>0&&Number(o.o)>Number(o.p))
     .slice()
-    .sort((a,b)=>{
-      const da=Number(a.o)>Number(a.p)?(Number(a.o)-Number(a.p))/Number(a.o):0;
-      const db=Number(b.o)>Number(b.p)?(Number(b.o)-Number(b.p))/Number(b.o):0;
-      return db-da||String(b.k||'').localeCompare(String(a.k||''))||(Number(b.id)||0)-(Number(a.id)||0);
-    })
+    .sort((a,b)=>(pct(b)-pct(a))||String(b.k||'').localeCompare(String(a.k||''))||(Number(b.id)||0)-(Number(a.id)||0))
     .slice(0,4);
 }
 const DEMO=false; // true visar rutan 'under uppbyggnad / exempel'
@@ -889,8 +885,9 @@ function offers(){
   else if(!list.length)body=`<div class="empty"><b>Inga träffar</b>${t?'Vi hittade inga erbjudanden som matchar din sökning.':'Det finns inga erbjudanden i den här vyn just nu.'}<div class="empty-actions">${t?'<button class="btn" data-clear-search>Rensa sökning</button>':''}${cat!=='Alla'?'<button class="btn ghost" data-reset-filters>Visa alla kategorier</button>':''}${hideMem?'<button class="btn ghost" data-show-membership>Visa även medlemspriser</button>':''}</div></div>`;
   else body=`<div class="grid">${sorted.map(card).join('')}</div>`;
   const campaigns=currentCampaigns();
-  const campaignContent=loading?'<div class="empty">Hämtar aktuella kampanjer…</div>':err?'<div class="empty">Kampanjerna kunde inte hämtas just nu.</div>':campaigns.length?campaigns.map(o=>`<button class="hc" data-hero="${o.id}" style="background:linear-gradient(135deg,${colr(o.col)},#1a1608)"><small>Aktuell kampanj</small><b>${esc(o.n)}</b><span>${esc(o.s)} · ${kr(o.p)}</span></button>`).join(''):'<div class="empty">Inga aktuella kampanjer just nu.</div>';
-  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<h2 class="campaign-title">Aktuella kampanjer</h2><div class="hero">${campaignContent}</div>
+  const campaignColors=['linear-gradient(135deg,#2b2209,#6b5416)','linear-gradient(135deg,#1c1c20,#4a4a52)','linear-gradient(135deg,#3a1f12,#8a5a2b)','linear-gradient(135deg,#3b2f0a,#8f7222)'];
+  const campaignContent=loading?'<div class="empty">Hämtar aktuella kampanjer…</div>':err?'<div class="empty">Kampanjerna kunde inte hämtas just nu.</div>':campaigns.length?campaigns.map((o,i)=>`<button class="hc" data-hero="${o.id}" style="background:${campaignColors[i%campaignColors.length]}"><small>−${pct(o)} % rabatt</small><b>${esc(o.n)}</b><span>${esc(o.s)} · ${kr(o.p)}</span></button>`).join(''):'<div class="empty">Inga rabatterade erbjudanden just nu.</div>';
+  return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<h2 class="campaign-title">Heta kampanjer just nu</h2><div class="hero">${campaignContent}</div>
   <h2 class="offers-title">Aktiva erbjudanden<span class="n" aria-live="polite">${loading||err?'':DATA.length+' st'}</span></h2>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
   <div class="sort-row"><label for="offer-sort">Sortera</label><select id="offer-sort" aria-label="Sortera erbjudanden"><option value="recommended"${sortMode==='recommended'?' selected':''}>Rekommenderade</option><option value="cheapest"${sortMode==='cheapest'?' selected':''}>Billigaste först</option><option value="expensive"${sortMode==='expensive'?' selected':''}>Dyraste först</option><option value="newest"${sortMode==='newest'?' selected':''}>Senaste först</option><option value="discount"${sortMode==='discount'?' selected':''}>Störst rabatt först</option></select></div>
