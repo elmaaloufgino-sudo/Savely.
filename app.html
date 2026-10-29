@@ -744,6 +744,23 @@ main{width:100%;min-width:0}
 /* Savely: red discount and green savings */
 .card .tile .badge{background:#dc2626!important;color:#fff!important;font-weight:800!important}
 .card .info .price .sv{color:#22c55e!important;font-weight:800!important}
+
+/* ===== Endast Heta kampanjer: smalare kort så fler erbjudanden syns direkt ===== */
+@media (max-width: 767px) {
+  .hero > .hc { flex: 0 0 62%; min-height: 126px; padding: 14px; border-radius: 18px; }
+  .hero > .hc b { font-size: 18px; line-height: 1.2; margin-top: 9px; }
+  .hero > .hc span { font-size: 12px; }
+  .hero > .hc small { padding: 3px 8px; }
+}
+@media (max-width: 380px) {
+  .hero > .hc { flex-basis: 64%; min-height: 120px; padding: 12px; }
+  .hero > .hc b { font-size: 16px; }
+}
+@media (min-width: 768px) {
+  .hero > .hc { flex-basis: 31%; min-height: 132px; padding: 16px; }
+  .hero > .hc b { font-size: 19px; }
+}
+
 </style>
 </head>
 <body>
