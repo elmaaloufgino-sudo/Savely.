@@ -219,21 +219,44 @@ function normalizeImport(o,i){
 }
 function parseFeedNumber(s){if(!s)return null;let x=String(s).replace(/\s/g,'').replace(/[A-Za-z€$£]/g,'');if(x.includes(',')&&x.includes('.'))x=x.lastIndexOf(',')>x.lastIndexOf('.')?x.replace(/\./g,'').replace(',','.'):x.replace(/,/g,'');else x=x.replace(',','.');const n=Number(x);return Number.isFinite(n)&&n>0?n:null}
 function importView(){
- $('#app').innerHTML=tabsHTML()+`<div class="panel"><b>Product feed preview</b><p class="import-help">Choose a CSV or XML product feed. The file is read locally in this browser. This is preview-only: it does not write to Supabase or publish products. Product publishing will be enabled after the real feed mapping and approval flow are verified.</p><label class="filepick">Choose feed file<input id="feedfile" type="file" accept=".csv,.xml,text/csv,application/xml,text/xml"></label><div class="msg" id="msg" role="alert"></div></div><div id="importpreview"></div>`;
+ $('#app').innerHTML=tabsHTML()+`<div class="panel"><b>Product feed preview</b><p class="import-help">Choose a CSV or XML product feed. The file is read locally. Nothing is saved until you select products and confirm.</p><label class="filepick">Choose feed file<input id="feedfile" type="file" accept=".csv,.xml,text/csv,application/xml,text/xml"></label><div class="msg" id="msg" role="alert"></div></div><div id="importpreview"></div>`;
+}
+function importIssue(r){
+ if(!r.store||r.store==='Okänd butik')return 'Missing store';
+ if(!r.name)return 'Missing product name';
+ if(!r.price||!r.old_price||r.old_price<=r.price)return 'Invalid deal/original price';
+ if(!r.affiliate_url&&!r.shop_url)return 'Missing product and affiliate links';
+ if(r.duplicate)return 'Possible duplicate';
+ return '';
 }
 function renderImport(){
  const box=$('#importpreview');if(!box)return;
- const valid=IMPORT_ROWS.filter(r=>r.name&&r.price&&r.old_price&&r.old_price>r.price&&!r.duplicate).length;
- box.innerHTML=IMPORT_ROWS.length?`<h2>Preview products (${IMPORT_ROWS.length})</h2><p class="import-help">${valid} pass the basic checks. Products without a name, valid prices, or an original price higher than the deal price are flagged. Existing store/name matches are marked as possible duplicates. No products can be published from this preview.</p>`+IMPORT_ROWS.map(r=>`<div class="import-row">${r.image_url?`<img src="${esc(r.image_url)}" alt="" onerror="this.style.display='none'">`:''}<div class="t"><b>${esc(r.name||'Unnamed product')}</b><small>${esc(r.store)} · ${r.price?kr(r.price):'No price'} ${r.old_price?'(was '+kr(r.old_price)+')':''}</small><small class="${r.duplicate||!r.name||!r.price||!r.old_price||r.old_price<=r.price?'bad':''}">${r.duplicate?'Possible duplicate — already in Fyndaren':!r.name?'Missing product name':!r.price?'Missing/invalid price':!r.old_price?'Missing original price':r.old_price<=r.price?'Original price must be higher':'Basic checks passed'}</small><small>${r.affiliate_url?'Tracking link found':'No tracking link mapped'} · ${r.shop_url?'Product link found':'No product link mapped'}</small></div></div>`).join(''):`<p class="import-help">No products loaded yet.</p>`;
+ const eligible=IMPORT_ROWS.filter(r=>!importIssue(r)).length;
+ const selected=IMPORT_ROWS.filter(r=>r.selected&&!importIssue(r)).length;
+ box.innerHTML=IMPORT_ROWS.length?`<h2>Preview products (${IMPORT_ROWS.length})</h2><p class="import-help">${eligible} eligible. Products with missing details, invalid prices, missing links or possible duplicates are blocked.</p><div class="two" style="margin:12px 0"><button class="btn ghost sm" type="button" data-selectall>Select all eligible</button><button class="btn ghost sm" type="button" data-clearselect>Clear selection</button></div>`+IMPORT_ROWS.map(r=>{const issue=importIssue(r);return `<div class="import-row"><input type="checkbox" data-import-select="${r.key}" ${r.selected&&!issue?'checked':''} ${issue?'disabled':''} aria-label="Select product">${r.image_url?`<img src="${esc(r.image_url)}" alt="" onerror="this.style.display='none'">`:''}<div class="t"><b>${esc(r.name||'Unnamed product')}</b><small>${esc(r.store)} · ${r.price?kr(r.price):'No price'} ${r.old_price?'(was '+kr(r.old_price)+')':''}</small><small class="${issue?'bad':''}">${esc(issue||'Ready to add')}</small><small>${r.affiliate_url?'Affiliate link found':'No affiliate link'} · ${r.shop_url?'Product link found':'No product link'}</small></div></div>`}).join('')+`<div class="panel"><b>${selected} selected</b><button class="btn" type="button" data-publish-selected ${selected?'':'disabled'}>Add selected products</button><div class="msg" id="publishmsg" role="status"></div></div>`:`<p class="import-help">No products loaded yet.</p>`;
+}
+async function publishSelected(){
+ const rows=IMPORT_ROWS.filter(r=>r.selected&&!importIssue(r));
+ if(!rows.length)return toast('Select eligible products first');
+ const keys=new Set();
+ for(const r of rows){const k=(r.store+'|'+r.name).toLowerCase();if(keys.has(k)||DATA.some(d=>(String(d.store)+'|'+String(d.name)).toLowerCase()===k))return toast('Duplicate detected. Reload the feed.');keys.add(k)}
+ const list=rows.map(r=>r.store+': '+r.name+' — '+kr(r.price)).join('\\n');
+ if(!confirm('Publish '+rows.length+' selected product(s)?\\n\\n'+list+'\\n\\nThey will appear in active deals. Continue?'))return;
+ const firstId=DATA.reduce((m,d)=>Math.max(m,Number(d.id)||0),0)+1;
+ const payload=rows.map((r,i)=>{const parts=r.store.trim().split(/\\s+/);const logo=parts.length>1?parts.map(x=>x[0]).join('').slice(0,3).toUpperCase():r.store.slice(0,3).toUpperCase();return {id:firstId+i,store:r.store,logo,color:'#10b981',category:r.category||'Övrigt',name:r.name,price:r.price,old_price:r.old_price,image_url:r.image_url||null,affiliate_url:r.affiliate_url||null,shop_url:r.shop_url||null,valid_until:'Tills vidare',valid_to:null,checked_on:todayISO()};});
+ const btn=$('[data-publish-selected]');if(btn){btn.disabled=true;btn.textContent='Saving…'}
+ const result=await sb.from('deals').insert(payload).select();
+ if(result.error||!result.data||result.data.length!==payload.length){const m=$('#publishmsg');if(m)m.textContent='Could not confirm the save. Check the deals list before retrying.';if(btn){btn.disabled=false;btn.textContent='Add selected products'}return}
+ IMPORT_ROWS=IMPORT_ROWS.filter(r=>!r.selected);await loadDeals();renderImport();toast(rows.length+' product(s) published');
 }
 async function readFeed(file){
  if(!file)return;setMsg('Reading file…');
- try{const txt=await file.text();const objects=/\.xml$/i.test(file.name)||txt.trim().startsWith('<')?parseXML(txt):parseCSV(txt);IMPORT_ROWS=objects.map(normalizeImport);renderImport();setMsg(IMPORT_ROWS.length?'Feed loaded. Review the products below.':'No product rows found.');}
+ try{const txt=await file.text();const objects=/\.xml$/i.test(file.name)||txt.trim().startsWith('<')?parseXML(txt):parseCSV(txt);IMPORT_ROWS=objects.map(normalizeImport);const seen=new Set();IMPORT_ROWS.forEach(r=>{const k=(r.store+'|'+r.name).toLowerCase();if(seen.has(k))r.duplicate=true;seen.add(k)});renderImport();setMsg(IMPORT_ROWS.length?'Feed loaded. Review and select products below.':'No product rows found.');}
  catch(e){IMPORT_ROWS=[];renderImport();setMsg(e.message||'Could not read this file.')}
 }
 // Feed import is intentionally preview-only. No database writes are performed here.
 
-document.addEventListener('change',e=>{if(e.target.id==='feedfile')readFeed(e.target.files&&e.target.files[0]);});
+document.addEventListener('change',e=>{if(e.target.id==='feedfile')readFeed(e.target.files&&e.target.files[0]);if(e.target.matches('[data-import-select]')){const r=IMPORT_ROWS.find(x=>x.key===Number(e.target.dataset.importSelect));if(r){r.selected=e.target.checked;renderImport()}}});
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
   if(d.login!==undefined)doLogin();
@@ -245,6 +268,9 @@ document.addEventListener('click',e=>{
   else if(d.view){view=d.view;editId=null;adminView()}
   else if(d.csave!==undefined)saveCode()
   else if(d.cdel){delCode(+d.cdel)}
+  else if(d.selectall!==undefined){IMPORT_ROWS.forEach(r=>r.selected=!importIssue(r));renderImport()}
+  else if(d.clearselect!==undefined){IMPORT_ROWS.forEach(r=>r.selected=false);renderImport()}
+  else if(d.publishSelected!==undefined){publishSelected()}
   else if(b.id==='out'){sb.auth.signOut()}
 });
 document.addEventListener('input',e=>{if(e.target.id==='flt'){filter=e.target.value;renderList()}});
