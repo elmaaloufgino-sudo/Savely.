@@ -214,7 +214,7 @@ function normalizeImport(o,i){
  const productUrl=fieldOf(o,['producturl','productlink','url','link']);
  const category=fieldOf(o,['category','productcategory','categoryname'])||'Övrigt';
  const price=parseFeedNumber(priceRaw),old=parseFeedNumber(oldRaw);
- const safeUrl=value=>/^https?:\\/\\//i.test(value||'')?value:'';
+ const safeUrl=value=>{try{const u=new URL(value||'');return u.protocol==='http:'||u.protocol==='https:'?value:''}catch(e){return ''}};
  return {key:i,store,name,price,old_price:old,image_url:safeUrl(image),affiliate_url:safeUrl(tracking),shop_url:safeUrl(productUrl),category,duplicate:!!DATA.find(d=>String(d.store).toLowerCase()===store.toLowerCase()&&String(d.name).toLowerCase()===name.toLowerCase()),selected:false,raw:o};
 }
 function parseFeedNumber(s){if(!s)return null;let x=String(s).replace(/\s/g,'').replace(/[A-Za-z€$£]/g,'');if(x.includes(',')&&x.includes('.'))x=x.lastIndexOf(',')>x.lastIndexOf('.')?x.replace(/\./g,'').replace(',','.'):x.replace(/,/g,'');else x=x.replace(',','.');const n=Number(x);return Number.isFinite(n)&&n>0?n:null}
