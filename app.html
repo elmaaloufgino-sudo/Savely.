@@ -817,6 +817,14 @@ main{width:100%;min-width:0}
     touch-action:pan-x;
   }
 }
+
+/* ===== Kompakt sökfält som följer med vid scroll ===== */
+header{position:relative;top:auto;z-index:1}
+.search-dock{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;padding:8px 24px 10px;background:rgba(10,10,12,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(230,202,101,.12)}
+.search-dock .search{margin:0 auto;max-width:680px;min-height:44px;box-shadow:0 0 18px rgba(212,175,55,.09)}
+.search-dock .search input{height:42px}
+@media(max-width:600px){.search-dock{padding:7px 12px 9px}}
+@media(max-width:600px){html,body{overflow-x:clip!important}}
 </style>
 </head>
 <body>
@@ -828,8 +836,10 @@ main{width:100%;min-width:0}
     <div class="sp"></div>
     <button class="hb" data-tab="list" aria-label="Öppna sparlistan"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg><i id="cnt">0</i></button>
   </div>
-  <label class="search"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
 </header>
+<div class="search-dock">
+  <label class="search"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Sök butik eller produkt…" aria-label="Sök butik eller produkt"></label>
+</div>
 <main id="main"></main>
 <footer><a href="integritetspolicy.html">Integritetspolicy</a> · <a href="om-oss.html">Om Fyndaren</a> · hej@fyndaren.se</footer>
 <nav aria-label="Huvudmeny">
