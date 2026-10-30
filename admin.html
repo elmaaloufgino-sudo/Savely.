@@ -254,7 +254,6 @@ async function readFeed(file){
  try{const txt=await file.text();const objects=/\.xml$/i.test(file.name)||txt.trim().startsWith('<')?parseXML(txt):parseCSV(txt);IMPORT_ROWS=objects.map(normalizeImport);const seen=new Set();IMPORT_ROWS.forEach(r=>{const k=(r.store+'|'+r.name).toLowerCase();if(seen.has(k))r.duplicate=true;seen.add(k)});renderImport();setMsg(IMPORT_ROWS.length?'Feed loaded. Review and select products below.':'No product rows found.');}
  catch(e){IMPORT_ROWS=[];renderImport();setMsg(e.message||'Could not read this file.')}
 }
-// Feed import is intentionally preview-only. No database writes are performed here.
 
 document.addEventListener('change',e=>{if(e.target.id==='feedfile')readFeed(e.target.files&&e.target.files[0]);if(e.target.matches('[data-import-select]')){const r=IMPORT_ROWS.find(x=>x.key===Number(e.target.dataset.importSelect));if(r){r.selected=e.target.checked;renderImport()}}});
 document.addEventListener('click',e=>{
