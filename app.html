@@ -72,6 +72,11 @@ h2 .n{margin-left:auto;font-size:13px;font-weight:400;color:var(--mute)}
 .empty{text-align:center;color:var(--mute);padding:40px 20px}
 .empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
 .empty .btn{margin-top:16px}
+/* ===== Fyndaren Belöningar ===== */
+.rewards-hero{background:linear-gradient(135deg,#1a1608,#0f0f12);border:1px solid rgba(212,175,55,.45);border-radius:22px;padding:22px;margin-bottom:16px;box-shadow:0 0 34px rgba(212,175,55,.08)}
+.rewards-kicker{color:var(--gink);font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.rewards-points{font-family:Cinzel,Georgia,serif;font-size:38px;font-weight:700;color:#fff;margin:8px 0 2px}.rewards-value{color:var(--mute);font-size:14px}.rewards-progress{height:9px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:18px 0 8px}.rewards-progress span{display:block;width:0;height:100%;background:var(--grad);border-radius:inherit}.rewards-note{color:var(--mute);font-size:13px}.rewards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 18px}.reward-stat{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:13px}.reward-stat b{display:block;font-size:19px;color:var(--gink)}.reward-stat span{font-size:12px;color:var(--mute)}.reward-coming{border:1px dashed rgba(212,175,55,.45);background:rgba(212,175,55,.05);border-radius:18px;padding:18px;text-align:center;color:var(--mute)}.reward-coming b{display:block;color:#fff;margin-bottom:5px}.reward-link{width:100%;margin:0 0 14px}
+@media(max-width:420px){.rewards-grid{grid-template-columns:1fr;gap:8px}.rewards-points{font-size:34px}}
+
 nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:var(--nav);border-top:1px solid var(--line);display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:9}
 nav button{flex:1;border:0;background:none;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:3px;font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;padding:6px 0}
 nav button[aria-current="page"]{color:var(--gink)}
@@ -1066,8 +1071,13 @@ function list(){
   const items=DATA.filter(o=>favs.has(o.id));
   const saved=items.reduce((a,o)=>a+o.o-o.p,0);
   const acct=`<div class="row"><div class="t"><b>${user?esc(user.email):'Du är inte inloggad'}</b><span>${user?'Din sparlista följer med på alla enheter.':'Logga in för att spara erbjudanden.'}</span></div><button class="code" ${user?'data-logout':'data-login'}>${user?'Logga ut':'Logga in'}</button></div>`;
-  if(!items.length)return `<h2>Sparlista</h2>${acct}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
-  return `<h2>Sparlista</h2>${acct}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
+  const rewardsLink=`<button class="btn reward-link" data-tab="rewards">🏆 Mina Belöningar</button>`;
+  if(!items.length)return `<h2>Sparlista</h2>${acct}${rewardsLink}<div class="empty"><b>Din sparlista är tom</b>Tryck på hjärtat på ett erbjudande för att spara det här.</div>`;
+  return `<h2>Sparlista</h2>${acct}${rewardsLink}<div class="sum">Du sparar totalt<b>${kr(saved)}</b>på ${items.length} sparade erbjudanden</div><div class="grid">${items.map(card).join('')}</div>`}
+
+function rewards(){
+  if(!user)return `<h2>🏆 Fyndaren Belöningar</h2><div class="rewards-hero"><div class="rewards-kicker">Medlemsförmån</div><div class="rewards-points">Kommer snart</div><div class="rewards-value">Logga in eller skapa ett konto för att vara redo när Fyndaren Belöningar lanseras.</div></div><div class="reward-coming"><b>Handla smart. Belönas för det.</b>Poäng kommer att tjänas på kvalificerade och godkända köp via Fyndaren. Poängen kan användas till rabatter, presenter och presentkort.</div><button class="btn" data-login>Logga in</button></div>`;
+  return `<h2>🏆 Mina Belöningar</h2><div class="rewards-hero"><div class="rewards-kicker">Fyndaren Belöningar</div><div class="rewards-points">0 poäng</div><div class="rewards-value">Belöningsvärde: 0 kr</div><div class="rewards-progress" aria-label="0 av 2500 poäng till minsta inlösen"><span></span></div><div class="rewards-note">Minsta inlösen är 2 500 poäng.</div></div><div class="rewards-grid"><div class="reward-stat"><b>0</b><span>Tillgängliga</span></div><div class="reward-stat"><b>0</b><span>Väntande</span></div><div class="reward-stat"><b>0</b><span>Förfaller snart</span></div></div><div class="reward-coming"><b>Belöningar kommer snart</b>Här kommer du att kunna följa poäng, se historik och lösa in rabatter, presenter och presentkort. Riktiga poäng aktiveras först när affiliateköp kan verifieras.</div>`}
 
 function scrollToTarget(el){
   if(!el)return;
@@ -1086,7 +1096,7 @@ function renderTicker(){
 }
 function countUp(el,end){if(matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=end+' st';return}const t0=performance.now();(function s(t){const k=Math.min((t-t0)/1000,1);el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+' st';if(k<1)requestAnimationFrame(s)})(t0)}
 function render(){
-  const mainEl=$('#main');mainEl.innerHTML={offers,compare,codes,list}[tab]();
+  const mainEl=$('#main');mainEl.innerHTML={offers,compare,codes,list,rewards}[tab]();
   mainEl.classList.toggle('enter',anim);
   if(anim){mainEl.querySelectorAll('.card,.row').forEach((c,i)=>c.style.animationDelay=Math.min(i,12)*55+'ms');const sb=mainEl.querySelector('.stats b');if(sb&&DATA.length)countUp(sb,DATA.length)}
   anim=false;
