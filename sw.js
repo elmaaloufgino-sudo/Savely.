@@ -1,4 +1,4 @@
-const CACHE = 'fyndaren-v19';
+const CACHE = 'fyndaren-v20';
 const SHELL = ['./', 'index.html', 'app.html', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -19,16 +19,20 @@ self.addEventListener('fetch', e => {
   // Only handle our own files. Database, login, fonts and scripts go straight to the network.
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;
   if (url.pathname.endsWith('admin.html')) return;
-  // Network first, so updates show up right away; fall back to the saved copy when offline.
-  e.respondWith(
-    fetch(req)
-      .then(res => {
-        if (res.ok) {
-          const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(req, copy));
-        }
-        return res;
-      })
-      .catch(() => caches.match(req).then(r => r || caches.match('app.html')))
-  );
+
+  // Start refreshing immediately; a cached response can be shown without waiting.
+  const refresh = fetch(req).then(res => {
+    if (!res.ok) return res;
+    return caches.open(CACHE).then(cache => cache.put(req, res.clone())).then(() => res);
+  });
+  e.waitUntil(refresh.then(() => undefined).catch(() => undefined));
+  e.respondWith((async () => {
+    const cached = await caches.match(req);
+    if (cached) return cached;
+    try {
+      return await refresh;
+    } catch (error) {
+      return (await caches.match(req)) || (await caches.match('app.html'));
+    }
+  })());
 });
