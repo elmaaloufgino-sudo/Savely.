@@ -892,7 +892,7 @@ const DEMO=false; // true visar rutan 'under uppbyggnad / exempel'
 let CODES=[];
 const CATS=['Alla','Mat & Dryck','Skönhet & Personlig vård','Hem & Inredning','Elektronik','Apotek','Kläder','Bygg & Hemmafix'];
 const ICONS={'Mat & Dryck':'🥗','Skönhet & Personlig vård':'✨','Hem & Inredning':'🛋️',Elektronik:'📱',Apotek:'💊',Kläder:'👕','Bygg & Hemmafix':'🛠️'};
-let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,sortMode='recommended',cmp='',favs=new Set(),user=null;
+let anim=true,popId=null,DATA=[],loading=true,err='',tab='offers',cat='Alla',q='',hideMem=false,sortMode='recommended',cmp='',favs=new Set(),user=null,rewardSummary={available_points:0,pending_points:0,expiring_soon_points:0,next_expiry_at:null},rewardLoading=false,rewardError='';
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -929,6 +929,33 @@ async function loadDeals(){
   loading=false;
   renderTicker();anim=true;render();
 }
+async function loadRewards(){
+  if(!sb||!user){
+    rewardSummary={available_points:0,pending_points:0,expiring_soon_points:0,next_expiry_at:null};
+    rewardLoading=false;rewardError='';
+    return;
+  }
+  rewardLoading=true;rewardError='';
+  if(tab==='rewards')render();
+  try{
+    const {data,error}=await sb.rpc('get_my_reward_summary');
+    if(error)throw error;
+    const row=Array.isArray(data)?data[0]:data;
+    rewardSummary={
+      available_points:Number(row?.available_points)||0,
+      pending_points:Number(row?.pending_points)||0,
+      expiring_soon_points:Number(row?.expiring_soon_points)||0,
+      next_expiry_at:row?.next_expiry_at||null
+    };
+  }catch(e){
+    rewardError='Kunde inte hämta dina belöningar just nu.';
+    rewardSummary={available_points:0,pending_points:0,expiring_soon_points:0,next_expiry_at:null};
+  }finally{
+    rewardLoading=false;
+    if(tab==='rewards')render();
+  }
+}
+
 async function loadFavs(){
   if(!sb||!user){favs=new Set();render();return}
   try{
@@ -1077,7 +1104,13 @@ function list(){
 
 function rewards(){
   if(!user)return `<h2>🏆 Fyndaren Belöningar</h2><div class="rewards-hero"><div class="rewards-kicker">Medlemsförmån</div><div class="rewards-points">Kommer snart</div><div class="rewards-value">Logga in eller skapa ett konto för att vara redo när Fyndaren Belöningar lanseras.</div></div><div class="reward-coming"><b>Handla smart. Belönas för det.</b>Poäng kommer att tjänas på kvalificerade och godkända köp via Fyndaren. Poängen kan användas till rabatter, presenter och presentkort.</div><button class="btn" data-login>Logga in</button></div>`;
-  return `<h2>🏆 Mina Belöningar</h2><div class="rewards-hero"><div class="rewards-kicker">Fyndaren Belöningar</div><div class="rewards-points">0 poäng</div><div class="rewards-value">Belöningsvärde: 0 kr</div><div class="rewards-progress" aria-label="0 av 2500 poäng till minsta inlösen"><span></span></div><div class="rewards-note">Minsta inlösen är 2 500 poäng.</div></div><div class="rewards-grid"><div class="reward-stat"><b>0</b><span>Tillgängliga</span></div><div class="reward-stat"><b>0</b><span>Väntande</span></div><div class="reward-stat"><b>0</b><span>Förfaller snart</span></div></div><div class="reward-coming"><b>Belöningar kommer snart</b>Här kommer du att kunna följa poäng, se historik och lösa in rabatter, presenter och presentkort. Riktiga poäng aktiveras först när affiliateköp kan verifieras.</div>`}
+  if(rewardLoading)return `<h2>🏆 Mina Belöningar</h2><div class="empty"><b>Hämtar dina belöningar…</b></div>`;
+  const available=rewardSummary.available_points||0,pending=rewardSummary.pending_points||0,expiring=rewardSummary.expiring_soon_points||0;
+  const progress=Math.min(100,Math.round((available/2500)*100));
+  const value=(available/100).toLocaleString('sv-SE',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const expiry=rewardSummary.next_expiry_at?new Date(rewardSummary.next_expiry_at).toLocaleDateString('sv-SE',{day:'numeric',month:'short',year:'numeric'}):'Inga poäng har utgångsdatum ännu';
+  const status=rewardError?'<div class="reward-coming"><b>⚠️ Tillfälligt problem</b>'+esc(rewardError)+'</div>':'<div class="reward-coming"><b>Belöningar kommer snart</b>Här kommer du att kunna följa poäng, se historik och lösa in rabatter, presenter och presentkort. Riktiga poäng aktiveras först när affiliateköp kan verifieras.</div>';
+  return `<h2>🏆 Mina Belöningar</h2><div class="rewards-hero"><div class="rewards-kicker">Fyndaren Belöningar</div><div class="rewards-points">${available.toLocaleString('sv-SE')} poäng</div><div class="rewards-value">Belöningsvärde: ${value} kr</div><div class="rewards-progress" aria-label="${available} av 2500 poäng till minsta inlösen"><span style="width:${progress}%"></span></div><div class="rewards-note">${available>=2500?'🎉 Du har nått minsta inlösen på 2 500 poäng.':'${(2500-available).toLocaleString('sv-SE')} poäng kvar till minsta inlösen.'}</div></div><div class="rewards-grid"><div class="reward-stat"><b>${available.toLocaleString('sv-SE')}</b><span>Tillgängliga</span></div><div class="reward-stat"><b>${pending.toLocaleString('sv-SE')}</b><span>Väntande</span></div><div class="reward-stat"><b>${expiring.toLocaleString('sv-SE')}</b><span>Förfaller inom 30 dagar</span></div></div><div class="reward-coming"><b>📅 Nästa utgångsdatum</b>${expiry}</div>${status}`}
 
 function scrollToTarget(el){
   if(!el)return;
@@ -1223,7 +1256,7 @@ $('#q').addEventListener('input',e=>{
 if(sb){
   sb.auth.onAuthStateChange((ev,session)=>{
     user=session?session.user:null;
-    setTimeout(loadFavs,0);
+    setTimeout(()=>{loadFavs();loadRewards()},0);
   });
 }
 loadDeals();
