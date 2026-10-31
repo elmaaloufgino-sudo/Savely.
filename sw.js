@@ -22,11 +22,8 @@ self.addEventListener('fetch', e => {
 
   // Start refreshing immediately; a cached response can be shown without waiting.
   const refresh = fetch(req).then(res => {
-    if (res.ok) {
-      const copy = res.clone();
-      caches.open(CACHE).then(cache => cache.put(req, copy));
-    }
-    return res;
+    if (!res.ok) return res;
+    return caches.open(CACHE).then(cache => cache.put(req, res.clone())).then(() => res);
   });
   e.waitUntil(refresh.then(() => undefined).catch(() => undefined));
   e.respondWith((async () => {
