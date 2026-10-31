@@ -20,21 +20,18 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;
   if (url.pathname.endsWith('admin.html')) return;
 
-  // Show a saved copy immediately and refresh it in the background.
-  // On a first visit, fetch from the network and save a successful response.
+  // Start refreshing immediately; a cached response can be shown without waiting.
+  const refresh = fetch(req).then(res => {
+    if (res.ok) {
+      const copy = res.clone();
+      caches.open(CACHE).then(cache => cache.put(req, copy));
+    }
+    return res;
+  });
+  e.waitUntil(refresh.then(() => undefined).catch(() => undefined));
   e.respondWith((async () => {
     const cached = await caches.match(req);
-    const refresh = fetch(req).then(res => {
-      if (res.ok) {
-        const copy = res.clone();
-        caches.open(CACHE).then(cache => cache.put(req, copy));
-      }
-      return res;
-    });
-    if (cached) {
-      e.waitUntil(refresh.then(() => undefined).catch(() => undefined));
-      return cached;
-    }
+    if (cached) return cached;
     try {
       return await refresh;
     } catch (error) {
