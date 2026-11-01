@@ -855,45 +855,39 @@ header{position:relative;top:auto;z-index:1}
 }
 
 
-/* Premium Deal Showcase – endast sektionen Heta kampanjer */
+/* Premium Deal Showcase – tydliga horisontella kampanjkort */
 .campaign-title{font-family:"Cinzel",Georgia,serif;letter-spacing:.035em}
-.hero{gap:13px;padding-bottom:9px;scroll-padding-inline:16px}
+.hero{display:flex;flex-direction:column;gap:10px;overflow:visible;margin:0;padding:0}
 .hero>.campaign-card{
-  flex:0 0 78%;min-height:0;padding:0;overflow:hidden;display:grid;
-  grid-template-columns:minmax(104px,39%) minmax(0,1fr);grid-template-rows:auto 1fr;
-  align-items:stretch;gap:0;text-align:left;position:relative;
-  color:#fff;background:linear-gradient(145deg,#19191b 0%,#101012 68%,#17140c 100%);
-  border:1px solid rgba(212,175,55,.32);border-radius:19px;
-  box-shadow:0 8px 24px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.035);
-  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+  flex:0 0 auto;width:100%;min-height:112px;padding:0;overflow:hidden;display:grid;
+  grid-template-columns:88px minmax(0,1fr);grid-template-rows:1fr;align-items:stretch;gap:0;
+  text-align:left;position:relative;color:#fff;background:#171719;
+  border:1px solid rgba(212,175,55,.28);border-radius:16px;box-shadow:0 5px 16px rgba(0,0,0,.22);
+  transition:border-color .18s ease,transform .18s ease;
 }
-.campaign-topline{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;
-  padding:11px 13px 7px;border-bottom:1px solid rgba(212,175,55,.13)}
-.campaign-kicker{font-size:9px;letter-spacing:.16em;font-weight:800;color:#d8bd69}
-.hero>.campaign-card .campaign-topline small{margin:0;background:#9f2525;color:#fff;border:1px solid rgba(255,255,255,.13);
-  border-radius:6px;padding:4px 8px;font-size:11px;font-weight:800;letter-spacing:.02em;box-shadow:none}
-.campaign-image{min-width:0;min-height:148px;display:flex;align-items:center;justify-content:center;
-  padding:12px 5px 14px;background:radial-gradient(ellipse at 50% 45%,rgba(212,175,55,.10),transparent 68%)}
-.campaign-image .product-shot{display:block;width:100%;height:126px;max-height:126px;object-fit:contain;padding:5px;
-  filter:drop-shadow(0 7px 12px rgba(0,0,0,.25))}
-.campaign-image .logo{margin:0 auto}
-.campaign-details{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-  padding:10px 13px 13px 5px;gap:5px}
-.campaign-store{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#b8b2a1;font-weight:700}
-.campaign-details>b{font-size:14px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.campaign-price{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-top:2px}
-.campaign-price strong{font-size:20px;line-height:1.15;color:#f0d77e;font-weight:800}
-.campaign-price s{font-size:11px;color:#aaa}
-.campaign-saving{font-size:11px;color:#75d6a0;font-weight:700}
-.campaign-cta{margin-top:5px;display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;
-  padding:8px 10px;border-radius:8px;background:linear-gradient(135deg,#d4af37,#e6ca65);
-  color:#17130a;font-size:11px;font-weight:800;letter-spacing:.01em}
+.campaign-image{grid-column:1;grid-row:1;min-width:0;min-height:112px;display:flex;align-items:center;
+  justify-content:center;padding:8px;background:#202023;border-right:1px solid rgba(212,175,55,.16)}
+.campaign-image .product-shot{display:block;width:100%;height:88px;max-height:88px;object-fit:contain;padding:3px}
+.campaign-image .logo{margin:0 auto;max-width:72px;max-height:72px}
+.campaign-details{grid-column:2;grid-row:1;min-width:0;display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:center;padding:10px 12px;gap:4px;background:#171719}
+.campaign-topline{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.campaign-kicker{font-size:9px;letter-spacing:.12em;font-weight:800;color:#e6ca65}
+.hero>.campaign-card .campaign-topline small{flex:none;margin:0;background:#a52626;color:#fff;
+  border:0;border-radius:5px;padding:3px 7px;font-size:10px;font-weight:800;box-shadow:none}
+.campaign-store{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#e0c978;font-weight:800}
+.campaign-details>b{font-size:13px;line-height:1.3;color:#fff;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.campaign-price{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-top:1px}
+.campaign-price strong{font-size:19px;line-height:1.15;color:#f0d77e;font-weight:800}
+.campaign-price s{font-size:11px;color:#c8c8ce}
+.campaign-saving{font-size:11px;color:#83d6a5;font-weight:700}
+.campaign-cta{margin-top:3px;display:inline-flex;align-items:center;gap:7px;padding:6px 10px;
+  border-radius:7px;background:linear-gradient(135deg,#d4af37,#e6ca65);color:#17130a;font-size:10px;font-weight:800}
 .hero>.campaign-card:focus-visible{outline:3px solid #e6ca65;outline-offset:3px}
-@media(hover:hover){.hero>.campaign-card:hover{transform:translateY(-2px);border-color:rgba(230,202,101,.72);box-shadow:0 12px 28px rgba(0,0,0,.32),0 0 0 1px rgba(212,175,55,.10)}}
-@media(max-width:380px){.hero>.campaign-card{flex-basis:84%;grid-template-columns:35% minmax(0,1fr)}
-  .campaign-image{min-height:136px;padding:9px 3px}.campaign-image .product-shot{height:112px;max-height:112px}
-  .campaign-details{padding-right:10px}.campaign-details>b{font-size:13px}.campaign-price strong{font-size:18px}}
-@media(min-width:768px){.hero>.campaign-card{flex-basis:48%;max-width:390px}}
+@media(hover:hover){.hero>.campaign-card:hover{transform:translateY(-1px);border-color:rgba(230,202,101,.72)}}
+@media(max-width:360px){.hero>.campaign-card{grid-template-columns:76px minmax(0,1fr)}
+  .campaign-details{padding:9px}.campaign-details>b{font-size:12px}.campaign-price strong{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.hero>.campaign-card{transition:none}}
 
 </style>
@@ -1221,7 +1215,7 @@ function offers(){
   else body=`<div class="grid">${sorted.map(card).join('')}</div>`;
   const campaigns=currentCampaigns();
   const campaignColors=['linear-gradient(135deg,#2b2209,#6b5416)','linear-gradient(135deg,#1c1c20,#4a4a52)','linear-gradient(135deg,#3a1f12,#8a5a2b)','linear-gradient(135deg,#3b2f0a,#8f7222)'];
-  const campaignContent=loading?'<div class="empty">Hämtar aktuella kampanjer…</div>':err?'<div class="empty">Kampanjerna kunde inte hämtas just nu.</div>':campaigns.length?campaigns.map((o,i)=>{const saved=Math.round((o.o-o.p)*100)/100;return `<button class="hc campaign-card" data-hero="${o.id}" aria-label="Visa kampanjen för ${esc(o.n)}"><span class="campaign-topline"><span class="campaign-kicker">UTVALD KAMPANJ</span><small>−${pct(o)} %</small></span><span class="campaign-image">${productVisual(o,i<2)}</span><span class="campaign-details"><span class="campaign-store">${esc(o.s)}</span><b>${esc(o.n)}</b><span class="campaign-price"><strong>${kr(o.p)}</strong><s>${kr(o.o)}</s></span><span class="campaign-saving">Du sparar ${kr(saved)}</span><span class="campaign-cta">Se erbjudandet <span aria-hidden="true">↗</span></span></span></button>`}).join(''):'<div class="empty">Inga rabatterade erbjudanden just nu.</div>';
+  const campaignContent=loading?'<div class="empty">Hämtar aktuella kampanjer…</div>':err?'<div class="empty">Kampanjerna kunde inte hämtas just nu.</div>':campaigns.length?campaigns.map((o,i)=>{const saved=Math.round((o.o-o.p)*100)/100;return `<button class="hc campaign-card" data-hero="${o.id}" aria-label="Visa kampanjen för ${esc(o.n)}"><span class="campaign-image">${productVisual(o,i<2)}</span><span class="campaign-details"><span class="campaign-topline"><span class="campaign-kicker">UTVALD KAMPANJ</span><small>−${pct(o)} %</small></span><span class="campaign-store">${esc(o.s)}</span><b>${esc(o.n)}</b><span class="campaign-price"><strong>${kr(o.p)}</strong><s>${kr(o.o)}</s></span><span class="campaign-saving">Du sparar ${kr(saved)}</span><span class="campaign-cta">Se erbjudandet <span aria-hidden="true">↗</span></span></span></button>`}).join(''):'<div class="empty">Inga rabatterade erbjudanden just nu.</div>';
   return `${DEMO?'<div class="demo">Under uppbyggnad: erbjudandena nedan är exempel tills riktiga är på plats.</div>':'<div class="disc">Priser och villkor kan ändras. Kontrollera alltid pris och villkor hos butiken innan du handlar.</div>'}${DATA.some(o=>o.a)?DISC:''}<h2 class="campaign-title">Heta kampanjer just nu</h2><div class="hero">${campaignContent}</div>
   <h2 class="offers-title">Aktiva erbjudanden<span class="n" aria-live="polite">${loading||err?'':DATA.length+' st'}</span></h2>
   <div class="chips" role="group" aria-label="Kategorier">${CATS.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${ICONS[c]?ICONS[c]+' ':''}${c}</button>`).join('')}</div>
