@@ -857,10 +857,10 @@ header{position:relative;top:auto;z-index:1}
 
 /* Premium Deal Showcase – tydliga horisontella kampanjkort */
 .campaign-title{font-family:"Cinzel",Georgia,serif;letter-spacing:.035em}
-.hero{display:flex;flex-direction:column;gap:10px;overflow:visible;margin:0;padding:0}
+.hero{display:flex;flex-direction:row;gap:13px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding-inline:16px;margin:0 -16px;padding:0 16px 9px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .hero>.campaign-card{
-  flex:0 0 auto;width:100%;min-height:112px;padding:0;overflow:hidden;display:grid;
-  grid-template-columns:88px minmax(0,1fr);grid-template-rows:1fr;align-items:stretch;gap:0;
+  flex:0 0 78%;max-width:390px;min-height:112px;padding:0;overflow:hidden;display:grid;
+  grid-template-columns:88px minmax(0,1fr);grid-template-rows:1fr;align-items:stretch;gap:0;scroll-snap-align:start;
   text-align:left;position:relative;color:#fff;background:#171719;
   border:1px solid rgba(212,175,55,.28);border-radius:16px;box-shadow:0 5px 16px rgba(0,0,0,.22);
   transition:border-color .18s ease,transform .18s ease;
@@ -884,6 +884,8 @@ header{position:relative;top:auto;z-index:1}
 .campaign-saving{font-size:11px;color:#83d6a5;font-weight:700}
 .campaign-cta{margin-top:3px;display:inline-flex;align-items:center;gap:7px;padding:6px 10px;
   border-radius:7px;background:linear-gradient(135deg,#d4af37,#e6ca65);color:#17130a;font-size:10px;font-weight:800}
+@media(max-width:380px){.hero>.campaign-card{flex-basis:86%;grid-template-columns:76px minmax(0,1fr)}}
+@media(min-width:768px){.hero>.campaign-card{flex-basis:48%}}
 .hero>.campaign-card:focus-visible{outline:3px solid #e6ca65;outline-offset:3px}
 @media(hover:hover){.hero>.campaign-card:hover{transform:translateY(-1px);border-color:rgba(230,202,101,.72)}}
 @media(max-width:360px){.hero>.campaign-card{grid-template-columns:76px minmax(0,1fr)}
